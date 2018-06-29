@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+
+  # Variaveis de ambiente
+  #SetEnv APPLICATION_ENV production
+  #SetEnv APPLICATION_ENV homologation
+  SetEnv APPLICATION_ENV development    
+
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+  RewriteRule ^(.*) - [E=BASE:%1]
+  # RewriteBase /
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ index.php [QSA,L]
+</IfModule>
