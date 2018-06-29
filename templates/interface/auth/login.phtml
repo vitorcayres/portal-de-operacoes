@@ -4,15 +4,15 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="<?php echo SITE_URL; ?>/assets/images/icon.png">
+    <link rel="icon" type="image/png" href="{{ base_url() }}/assets/images/icon.png">
 
-    <title>Portal de Operações | FS</title>
+    <title>FS | Portal de Operações</title>
 
-    <link href="<?php echo SITE_URL; ?>/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="<?php echo SITE_URL; ?>/assets/css/font-awesome.css" rel="stylesheet">
-    <link href="<?php echo SITE_URL; ?>/assets/css/animate.css" rel="stylesheet">
-    <link href="<?php echo SITE_URL; ?>/assets/css/style.css" rel="stylesheet">
-    <link href="<?php echo SITE_URL; ?>/assets/css/ladda-themeless.min.css" rel="stylesheet">
+    <link href="{{ base_url() }}/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ base_url() }}/assets/css/font-awesome.css" rel="stylesheet">
+    <link href="{{ base_url() }}/assets/css/animate.css" rel="stylesheet">
+    <link href="{{ base_url() }}/assets/css/style.css" rel="stylesheet">
+    <link href="{{ base_url() }}/assets/css/ladda-themeless.min.css" rel="stylesheet">
 
 </head>
 
@@ -20,7 +20,7 @@
     <div class="middle-box text-center loginscreen animated fadeInDown">
         <div>
             <div>
-                <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" style="width: 90px; margin-bottom: 20px;">
+                <img src="{{ base_url() }}/assets/images/logo.png" style="width: 90px; margin-bottom: 20px;">
             </div>
             <form class="m-t" role="form">
                 <div class="form-group">
@@ -37,9 +37,9 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="<?php echo SITE_URL; ?>/assets/js/spin.min.js"></script>
-    <script src="<?php echo SITE_URL; ?>/assets/js/ladda.min.js"></script>
-    <script src="<?php echo SITE_URL; ?>/assets/js/ladda.jquery.min.js"></script>
+    <script src="{{ base_url() }}/assets/js/spin.min.js"></script>
+    <script src="{{ base_url() }}/assets/js/ladda.min.js"></script>
+    <script src="{{ base_url() }}/assets/js/ladda.jquery.min.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function (){
@@ -89,11 +89,11 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "<?php echo GDU_HOSTNAME; ?>/auth/login",
+                    url: "{{ gdu_hostname }}/auth/login",
                     dataType: 'json',
                     async: false,
                     headers: {
-                        "Authorization": "<?php echo GDU_TOKEN; ?>"
+                        "Authorization": "{{ gdu_token }}"
                     },
                     data: data,            
                     beforeSend: function(){
@@ -101,7 +101,7 @@
                     },
                     success: function (data){
                         token = sessionStorage.setItem('token', data.token);
-                        $(location).attr('href','../dashboard');
+                        $(location).attr('href','{{ base_url() }}/dashboard');
                     },
                     error: function(data) {
                         var obj = data.responseJSON;

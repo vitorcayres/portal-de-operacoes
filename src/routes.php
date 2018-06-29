@@ -1,4 +1,7 @@
 <?php
 
-// Routes
-$app->get('/auth/login', App\Controllers\LoginController::class . ':auth');
+/**
+**  Rotas
+**/
+
+$app->map(['GET', 'POST', 'PUT', 'DELETE'], '[/{params:.*}]', App\Controllers\AdminController::class . ':execute');
