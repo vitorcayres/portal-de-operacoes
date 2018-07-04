@@ -8,6 +8,8 @@ switch (APPLICATION_ENV) {
     define('SITE_URL', 'http://localhost/novos-projetos/projeto-plataforma/portal-de-operacoes/public');
     define('GDU_HOSTNAME', 'http://localhost/novos-projetos/projeto-plataforma/gerenciador-de-usuarios/api/v1');
     define('GDU_TOKEN', 'Basic cm9vdDp0b29y');
+    define('SECRET_KEY', 'Fsas123@');
+    
 
     break;
     

@@ -26,3 +26,8 @@ $container['view'] = function ($c) {
     $view->addExtension(new Slim\Views\TwigExtension($c['router'], $basePath));
     return $view;
 };
+
+// Register globally to app
+$container['session'] = function ($c) {
+  return new \SlimSession\Helper;
+};

@@ -89,18 +89,13 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "{{ gdu_hostname }}/auth/login",
+                    url: "../auth/login",
                     dataType: 'json',
-                    async: false,
-                    headers: {
-                        "Authorization": "{{ gdu_token }}"
-                    },
                     data: data,            
                     beforeSend: function(){
                         $('.alert').hide();
                     },
                     success: function (data){
-                        token = sessionStorage.setItem('token', data.token);
                         $(location).attr('href','{{ base_url() }}/dashboard');
                     },
                     error: function(data) {

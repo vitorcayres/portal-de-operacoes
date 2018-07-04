@@ -20,6 +20,7 @@ require __DIR__ . '/../vendor/autoload.php';
 // Set up configurations
 require __DIR__ . '/../src/constants.php';
 
+session_cache_limiter(false);
 session_start();
 
 // Instantiate the app
