@@ -1,33 +1,28 @@
 $(document).ready(function() {
 
-    // var dtColumns = (dataTablesColumns)? dataTablesColumns : '';
+    var dtCL = (dataTablesColumns)? dataTablesColumns : '';
+    var arrColumns = dtCL.split(",");
 
-    // var columns = [];
-    // $.each(dtColumns, function( key, value) {
-    //   var data = {'data': value, 'orderable': false};
-    //   columns.push(data);
-    // });
+    var dtColumns = [];
+    $.each(arrColumns, function( k, v) {
+      var data = {'data': v.replace(" ", ""), 'orderable': false};
+      dtColumns.push(data);
+    });
 
-    // console.log(JSON.stringify(dataTablesColumns));
-
-    $('#' + endpoint).DataTable( {
+    $('#' + pagina).DataTable( {
         "processing": true,
         "serverSide": true,
         "responsive": true,
         "ajax":{
-            url :"../../ajax/loadtable", // json datasource
+            url :"../../ajax/loadtable?hostname="+hostname+"&token="+token+"&endpoint="+endpoint+"", // json datasource
             error: function(){  // error handling
-                $("." + endpoint + "-error").html("");
-                $("#" + endpoint).append('<tbody class="employee-grid-error"><tr><th colspan="3">Nenhum registro encontrado</th></tr></tbody>');
-                $("#" + endpoint + "_processing").css("display","none");
+                $("." + pagina + "-error").html("");
+                $("#" + pagina).append('<tbody class="employee-grid-error"><tr><th colspan="3">Nenhum registro encontrado</th></tr></tbody>');
+                $("#" + pagina + "_processing").css("display","none");
 
             }
         },
-        "columns": [
-            {"data": "id"},
-            {"data": "name"},
-            {"data": "create_date"}
-        ],
+        "columns": dtColumns,
         "language": {
           "sEmptyTable": "Nenhum registro encontrado",
           "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",

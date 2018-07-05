@@ -5,40 +5,64 @@ namespace App\Controllers;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use \SlimSession\Helper;
+use App\Libraries\UserManagerPlatform;
 
 class WorkplaceController
 {
-
     private $_hostname = GDU_HOSTNAME;
-    private $_token = GDU_TOKEN;
 
     public function __construct($container){
         $this->container = $container;
         $this->session = new \SlimSession\Helper;
     }    
 
-    public function list(Request $request, Response $response, $args)
+    public function listar(Request $request, Response $response, $args)
     {
-        return $this->container->view->render($response, '/interface/configurations/workplace/list.phtml', [
-            'endpoint' => 'workplace',
-            'gdu_hostname' => GDU_HOSTNAME,
-            'gdu_token' => GDU_TOKEN,
-            'token'    => $this->session->get('token'),
-            'dataTablesColumns' => json_encode(array('id', 'name', 'create_date'))
+        return $this->container->view->render($response, '/interface/configuracoes/empresas/listar.phtml', [
+            'endpoint'      => 'workplace',
+            'pagina'        => 'empresas',
+            'hostname'      => $this->_hostname,
+            'token'         => $this->session->get('token'),
+            'dataTablesColumns' => 'id, name'
         ]);
     }
 
-    public function add(Request $request, Response $response, $args)
+    public function inserir(Request $request, Response $response, $args)
     {
-        return $this->container->view->render($response, '/interface/configurations/workplace/add.phtml');
+        if($request->isPost()){
+
+            $body = $request->getParsedBody();
+            $rows = UserManagerPlatform::POST($this->_hostname, $this->session->get('token'), '/workplace', $body);
+
+            switch ($rows->status) {
+                case 'success':
+                    
+                    # Message
+                    $this->container->flash->addMessage('success', 'Registro inserido com sucesso.');
+                    return $response->withStatus(200)->withHeader('Location', 'listar');
+                    
+                    break;
+                
+                default:
+                    $this->container->flash->addMessage('error', $rows->message);
+                    break;
+            }
+        }
+
+        return $this->container->view->render($response, '/interface/configuracoes/empresas/inserir.phtml', [
+            'endpoint'      => 'workplace',
+            'pagina'        => 'empresas',            
+            'hostname'      => $this->_hostname,
+            'token'         => $this->session->get('token')
+        ]);
     }
 
-    public function modify(Request $request, Response $response, $args)
+    public function editar(Request $request, Response $response, $args)
     {
-        return $this->container->view->render($response, '/interface/configurations/workplace/modify.phtml');
+        return $this->container->view->render($response, '/interface/configuracoes/empresas/editar.phtml');
     }
 
-    public function remove(Request $request, Response $response, $args)
+    public function remover(Request $request, Response $response, $args)
     {
         
     }        

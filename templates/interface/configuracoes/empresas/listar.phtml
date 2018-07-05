@@ -10,8 +10,14 @@
                     <a class="btn btn-success" type="button" href="{{ base_url() }}/configuracoes/empresas/inserir" ><i class="fa fa-plus"></i> Adicionar Empresas</a>
                     </div>
                     <div class="ibox-content">
+                        {% for item in messages.success %}
+                        <div class="alert alert-success alert-dismissable">
+                            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                            {{item}}
+                        </div>
+                        {% endfor %}
                         <div class="table-responsive">
-                            <table id="{{endpoint}}" class="table table-striped table-bordered table-hover">
+                            <table id="{{ pagina }}" class="table table-striped table-bordered table-hover">
                                 <thead>
                                   <tr>
                                     <th>#</th>

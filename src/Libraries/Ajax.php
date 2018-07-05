@@ -8,7 +8,6 @@ class Ajax extends UserManagerPlatform {
 
     public function __construct($container){
         $this->container = $container;
-        $this->session = new \SlimSession\Helper;
     }    
 
     public function loadtable($hostname, $token, $endpoint){
@@ -19,7 +18,7 @@ class Ajax extends UserManagerPlatform {
     	$length = ($request['length'] == 0)? 1 : $request['length'];
     	$page = (int)($start / $request['length']) + 1;
 
-    	$rows = UserManagerPlatform::GET(GDU_HOSTNAME, $this->session->get('token'), '/permissions?page='. $page . '&limit='. $length);
+    	$rows = UserManagerPlatform::GET($request['hostname'], $request['token'], '/'.$request['endpoint'] .'?page='. $page . '&limit='. $length);
 
 		$json_data = array( "draw" =>  intval($request['draw']),
 							"recordsTotal" => $rows->total,

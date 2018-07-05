@@ -3,6 +3,14 @@
 {% block content %}
 
         <div class="wrapper wrapper-content animated fadeInRight">
+
+        {% for item in messages.error %}
+        <div class="alert alert-error alert-dismissable">
+            <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+            {{item}}
+        </div>
+        {% endfor %}
+
             <div class="row">
                 <div class="col-lg-12">
                 <div class="ibox float-e-margins">
@@ -10,11 +18,11 @@
                     <h5> Nova Empresa</h5>
                     </div>
                     <div class="ibox-content">
-                        <form method="get" class="form-horizontal">
+                        <form class="form-horizontal" method="POST" action="{{ path_for('inserir-empresas') }}">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Nome *:</label>
                                 <div class="col-sm-4">
-                                    <input type="text" class="form-control">
+                                    <input type="text" class="form-control" name="name" required="true">
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
