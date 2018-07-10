@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use \SlimSession\Helper;
+use \Adbar\Session;
 use \Firebase\JWT\JWT;
 use App\Libraries\UserManagerPlatform;
 
@@ -15,7 +15,7 @@ class LoginController
 
     public function __construct($container){
         $this->container = $container;
-        $this->session = new \SlimSession\Helper;
+        $this->session = new \Adbar\Session;
     }    
 
     public function __invoke(Request $request, Response $response, $args){

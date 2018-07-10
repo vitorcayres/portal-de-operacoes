@@ -19,14 +19,6 @@ $container['logger'] = function ($c) {
 };
 
 // Twig View
-// $container['view'] = function ($c) {
-//     $settings = $c->get('settings')['renderer'];
-//     $view = new \Slim\Views\Twig($settings['template_path']);
-//     $basePath = rtrim(str_ireplace('index.php', '', $c['request']->getUri()->getBasePath()), '/');
-//     $view->addExtension(new Slim\Views\TwigExtension($c['router'], $basePath));
-//     return $view;
-// };
-
 $container['view'] = function ($container) {
     $settings = $container->get('settings')['renderer'];
     $view = new \Slim\Views\Twig($settings['template_path']);
@@ -41,8 +33,9 @@ $container['view'] = function ($container) {
 };
 
 // Register globally to app
-$container['session'] = function ($c) {
-  return new \SlimSession\Helper;
+$container['session'] = function ($container) {
+    $session = new \Adbar\Session($container->get('settings')['session']['namespace']);
+    return $session;
 };
 
 // Register provider

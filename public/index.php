@@ -20,9 +20,6 @@ require __DIR__ . '/../vendor/autoload.php';
 // Set up configurations
 require __DIR__ . '/../src/constants.php';
 
-session_cache_limiter(false);
-session_start();
-
 // Instantiate the app
 $settings = require __DIR__ . '/../src/settings.php';
 $app = new \Slim\App($settings);

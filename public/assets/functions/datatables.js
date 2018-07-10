@@ -9,13 +9,17 @@ $(document).ready(function() {
       dtColumns.push(data);
     });
 
-    $('#' + pagina).DataTable( {
+    dtColumns.push({'data': null, 'orderable': false, 'defaultContent': '<a id="modify" title="Editar"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;&nbsp;<a id="delete" title="Excluir"><i class="fa fa-remove"></i></a>'});
+
+    // Datatables
+    var table = $('#' + pagina).DataTable( {
         "processing": true,
         "serverSide": true,
         "responsive": true,
+        "searching": false,
         "ajax":{
-            url :"../../ajax/loadtable?hostname="+hostname+"&token="+token+"&endpoint="+endpoint+"", // json datasource
-            error: function(){  // error handling
+            url :"../../ajax/loadtable?hostname="+hostname+"&token="+token+"&endpoint="+endpoint+"",
+            error: function(){
                 $("." + pagina + "-error").html("");
                 $("#" + pagina).append('<tbody class="employee-grid-error"><tr><th colspan="3">Nenhum registro encontrado</th></tr></tbody>');
                 $("#" + pagina + "_processing").css("display","none");
@@ -47,4 +51,29 @@ $(document).ready(function() {
           }
       }        
     } );
-} );
+
+    // Função para mostrar o detalhe de um registro
+    $('#'+pagina+' tbody').on('click', '#details', function () {
+        var data = table.row( $(this).parents('tr') ).data();
+        window.location = "detalhes/"+data.id;        
+    });
+
+    // Função para editar um registro
+    $('#'+pagina+' tbody').on('click', '#modify', function () {
+        var data = table.row( $(this).parents('tr') ).data();
+        window.location = "editar/"+ data.id;
+    });
+
+    // Função para excluir um registro
+    $('#'+pagina+' tbody').on('click', '#delete', function () {
+        var data = table.row( $(this).parents('tr') ).data();
+        var result = confirm("Você realmente deseja excluir esse registro?");
+        
+        if (result) {
+            window.location = "remover/"+data.id; 
+        }else{
+            return false;
+        }
+    });
+
+});

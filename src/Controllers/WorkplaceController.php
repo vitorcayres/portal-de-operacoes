@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use \SlimSession\Helper;
+use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 
 class WorkplaceController
@@ -13,16 +13,16 @@ class WorkplaceController
 
     public function __construct($container){
         $this->container = $container;
-        $this->session = new \SlimSession\Helper;
+        $this->session = new \Adbar\Session;
     }    
 
     public function listar(Request $request, Response $response, $args)
     {
         return $this->container->view->render($response, '/interface/configuracoes/empresas/listar.phtml', [
-            'endpoint'      => 'workplace',
-            'pagina'        => 'empresas',
-            'hostname'      => $this->_hostname,
-            'token'         => $this->session->get('token'),
+            'endpoint'          => 'workplace',
+            'pagina'            => 'empresas',
+            'hostname'          => $this->_hostname,
+            'token'             => $this->session->get('token'),
             'dataTablesColumns' => 'id, name'
         ]);
     }
@@ -36,15 +36,13 @@ class WorkplaceController
 
             switch ($rows->status) {
                 case 'success':
-                    
-                    # Message
-                    $this->container->flash->addMessage('success', 'Registro inserido com sucesso.');
+                    $this->container->flash->addMessage('success', $rows->message);
                     return $response->withStatus(200)->withHeader('Location', 'listar');
-                    
                     break;
                 
                 default:
                     $this->container->flash->addMessage('error', $rows->message);
+                    return $response->withStatus(400)->withHeader('Location', 'inserir');                
                     break;
             }
         }
@@ -59,12 +57,56 @@ class WorkplaceController
 
     public function editar(Request $request, Response $response, $args)
     {
-        return $this->container->view->render($response, '/interface/configuracoes/empresas/editar.phtml');
+        // Recuperando os dados pelo id
+        $id = $args['id'];
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->session->get('token'), '/workplace/'. $id);
+
+        if($request->isPost()){
+
+            $body = $request->getParsedBody();
+            $rows = UserManagerPlatform::PUT($this->_hostname, $this->session->get('token'), '/workplace/'. $id, $body);
+
+            switch ($rows->status) {
+                case 'success':
+                    $this->container->flash->addMessage('success', $rows->message);
+                    return $response->withStatus(200)->withHeader('Location', '../listar');
+                    break;
+                
+                default:
+                    $this->container->flash->addMessage('error', $rows->message);
+                    return $response->withStatus(400)->withHeader('Location', '../editar/'. $id);
+                    break;
+            }
+        }
+
+        return $this->container->view->render($response, '/interface/configuracoes/empresas/editar.phtml', [
+            'endpoint'      => 'workplace',
+            'pagina'        => 'empresas',            
+            'hostname'      => $this->_hostname,
+            'token'         => $this->session->get('token'),
+            'id'            => $args['id'],
+            'rows'          => $rows->data
+        ]);        
     }
 
     public function remover(Request $request, Response $response, $args)
     {
-        
+        // Recuperando os dados pelo id
+        $id = $args['id'];
+
+        $rows = UserManagerPlatform::DELETE($this->_hostname, $this->session->get('token'), '/workplace/', $id);
+
+        switch ($rows->status) {
+            case 'success':
+                $this->container->flash->addMessage('success', $rows->message);
+                return $response->withStatus(200)->withHeader('Location', '../listar');
+                break;
+            
+            default:
+                $this->container->flash->addMessage('error', $rows->message);
+                return $response->withStatus(400)->withHeader('Location', '../listar');
+                break;
+        }       
     }        
 
 }
