@@ -18,10 +18,6 @@ class LoginController
         $this->session = new \Adbar\Session;
     }    
 
-    public function __invoke(Request $request, Response $response, $args){
-        return $this->container->view->render($response, '/interface/auth/login.phtml');
-    }
-
     public function login(Request $request, Response $response, $args){
 
         if($request->isPost()){
@@ -62,5 +58,14 @@ class LoginController
                     break;
             }
         }
+
+        return $this->container->view->render($response, '/interface/auth/login.phtml');
     }
+
+    public function logout(Request $request, Response $response, $args){
+        $id = $this->session["id"];
+        $this->session->clear();
+        return $response->withStatus(200)->withHeader('Location', '../auth/login');  
+    }
+
 }

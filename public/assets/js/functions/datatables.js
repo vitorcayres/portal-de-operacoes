@@ -67,13 +67,32 @@ $(document).ready(function() {
     // Função para excluir um registro
     $('#'+pagina+' tbody').on('click', '#delete', function () {
         var data = table.row( $(this).parents('tr') ).data();
-        var result = confirm("Você realmente deseja excluir esse registro?");
-        
-        if (result) {
-            window.location = "remover/"+data.id; 
-        }else{
-            return false;
-        }
-    });
 
+        swal({
+            title: "Você tem certeza?",
+            text: "Você não poderá recuperar este registro!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim, excluir!",
+            cancelButtonText: "Cancelar",
+            closeOnConfirm: false,
+            allowEscapeKey: false
+          }, function () {
+
+            $.ajax({
+              type: "POST",
+              url: "remover/"+data.id,
+              data: {id: data.id},            
+              success: function (data){
+                table.ajax.reload();
+                swal("Deletado!", "Seu registro foi excluído.", "success");
+              },
+              error: function(data) {
+                return false;
+              }              
+            });
+        });
+    });
+    
 });

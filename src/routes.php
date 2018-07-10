@@ -1,20 +1,29 @@
 <?php
 
+# AJAX: loadtable
+$app->get('/ajax/loadtable', App\Libraries\Ajax::class . ':loadtable');
+
 # Authentication
-$app->get('/auth/login', App\Controllers\LoginController::class);
-$app->post('/auth/login', App\Controllers\LoginController::class . ':login');
+
+$app->group('/auth', function () {
+
+	# Login | Logout
+	$this->map(['GET', 'POST'], '/login', App\Controllers\LoginController::class . ':login');
+	$this->map(['GET', 'POST'], '/logout', App\Controllers\LoginController::class . ':logout');
+});
 
 # Dashboard
 $app->get('/dashboard', App\Controllers\DashboardController::class);
 
-# Workplace
-$app->get('/configuracoes/empresas/listar', App\Controllers\WorkplaceController::class .':listar');
-$app->post('/configuracoes/empresas/inserir', App\Controllers\WorkplaceController::class .':inserir');
-$app->get('/configuracoes/empresas/inserir', App\Controllers\WorkplaceController::class .':inserir')->setName('inserir-empresas');
-$app->get('/configuracoes/empresas/editar/{id}', App\Controllers\WorkplaceController::class .':editar')->setName('editar-empresas');
-$app->post('/configuracoes/empresas/editar/{id}', App\Controllers\WorkplaceController::class .':editar');
-$app->get('/configuracoes/empresas/remover/{id}', App\Controllers\WorkplaceController::class .':remover');
-$app->delete('/configuracoes/empresas/remover/{id}', App\Controllers\WorkplaceController::class .':remover');
+# Configurações da Interface
+$app->group('/configuracoes', function () {
 
-# AJAX: loadtable
-$app->get('/ajax/loadtable', App\Libraries\Ajax::class . ':loadtable');
+	# Empresas
+	$this->group('/empresas', function () {
+		$this->map(['GET'], '/listar', App\Controllers\WorkplaceController::class .':listar');
+	    $this->map(['GET', 'POST'], '/inserir', App\Controllers\WorkplaceController::class .':inserir')->setName('inserir-empresas');
+	    $this->map(['GET', 'POST'], '/editar/{id}', App\Controllers\WorkplaceController::class .':editar')->setName('editar-empresas');
+	    $this->map(['POST', 'DELETE'], '/remover/{id}', App\Controllers\WorkplaceController::class .':remover');
+	});
+	
+});

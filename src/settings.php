@@ -34,7 +34,7 @@ return [
             'cache_limiter'  => 'nocache',
 
             // Extend session lifetime after each user activity
-            'autorefresh'    => false,
+            'autorefresh'    => true,
 
             // Encrypt session data if string is set
             'encryption_key' => null,

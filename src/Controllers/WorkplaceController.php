@@ -14,6 +14,12 @@ class WorkplaceController
     public function __construct($container){
         $this->container = $container;
         $this->session = new \Adbar\Session;
+        
+        # Parametros de Texto
+        $this->_sistema = 'configuracoes';
+        $this->_titulo  = 'Configurações :: Empresas';
+        $this->_subtitulo  = 'Empresas';
+
     }    
 
     public function listar(Request $request, Response $response, $args)
@@ -21,6 +27,9 @@ class WorkplaceController
         return $this->container->view->render($response, '/interface/configuracoes/empresas/listar.phtml', [
             'endpoint'          => 'workplace',
             'pagina'            => 'empresas',
+            'menu_sistema'      => $this->_sistema,
+            'titulo'            => $this->_titulo,
+            'subtitulo'         => 'Listar ' . $this->_subtitulo,
             'hostname'          => $this->_hostname,
             'token'             => $this->session->get('token'),
             'dataTablesColumns' => 'id, name'
@@ -49,9 +58,13 @@ class WorkplaceController
 
         return $this->container->view->render($response, '/interface/configuracoes/empresas/inserir.phtml', [
             'endpoint'      => 'workplace',
-            'pagina'        => 'empresas',            
+            'pagina'        => 'empresas',
+            'menu_sistema'  => $this->_sistema,
+            'titulo'        => $this->_titulo,
+            'subtitulo'     => 'Nova Empresa',                     
             'hostname'      => $this->_hostname,
-            'token'         => $this->session->get('token')
+            'token'         => $this->session->get('token'),
+            'menu_sistema'  => 'configuracoes'          
         ]);
     }
 
@@ -81,11 +94,15 @@ class WorkplaceController
 
         return $this->container->view->render($response, '/interface/configuracoes/empresas/editar.phtml', [
             'endpoint'      => 'workplace',
-            'pagina'        => 'empresas',            
+            'pagina'        => 'empresas',
+            'menu_sistema'  => $this->_sistema,
+            'titulo'        => $this->_titulo,
+            'subtitulo'     => 'Editar Empresa',           
             'hostname'      => $this->_hostname,
             'token'         => $this->session->get('token'),
             'id'            => $args['id'],
-            'rows'          => $rows->data
+            'rows'          => $rows->data,
+            'menu_sistema'  => 'configuracoes'        
         ]);        
     }
 
@@ -98,8 +115,7 @@ class WorkplaceController
 
         switch ($rows->status) {
             case 'success':
-                $this->container->flash->addMessage('success', $rows->message);
-                return $response->withStatus(200)->withHeader('Location', '../listar');
+                return true;
                 break;
             
             default:
