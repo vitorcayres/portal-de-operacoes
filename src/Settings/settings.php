@@ -6,7 +6,7 @@ return [
 
         // Renderer settings
         'renderer' => [
-            'template_path' => __DIR__ . '/../templates/',
+            'template_path' => __DIR__ . '/../../templates/',
         ],
 
         // Monolog settings
@@ -18,7 +18,7 @@ return [
         'session' => [
             // Session cookie settings
             'name'           => 'slim_session',
-            'lifetime'       => 360,
+            'lifetime'       => 60,
             'path'           => '/',
             'domain'         => null,
             'secure'         => false,

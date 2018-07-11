@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Controllers\Configurations;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -17,16 +17,19 @@ class WorkplaceController
         
         # Parametros de Texto
         $this->_sistema = 'configuracoes';
-        $this->_titulo  = 'Configurações :: Empresas';
-        $this->_subtitulo  = 'Empresas';
+        $this->_subtitulo  = 'Empresa';        
+        $this->_titulo  = 'Configurações :: ' . $this->_subtitulo;
+        $this->_pagina = 'empresas';
+        $this->_endpoint = 'workplace';
+        $this->_template = '/interface/configuracoes/empresas';
 
     }    
 
     public function listar(Request $request, Response $response, $args)
     {
-        return $this->container->view->render($response, '/interface/configuracoes/empresas/listar.phtml', [
-            'endpoint'          => 'workplace',
-            'pagina'            => 'empresas',
+        return $this->container->view->render($response, $this->_template . '/listar.phtml', [
+            'endpoint'          => $this->_endpoint,
+            'pagina'            => $this->_pagina,
             'menu_sistema'      => $this->_sistema,
             'titulo'            => $this->_titulo,
             'subtitulo'         => 'Listar ' . $this->_subtitulo,
@@ -38,10 +41,10 @@ class WorkplaceController
 
     public function inserir(Request $request, Response $response, $args)
     {
-        if($request->isPost()){
-
+        if($request->isPost())
+        {
             $body = $request->getParsedBody();
-            $rows = UserManagerPlatform::POST($this->_hostname, $this->session->get('token'), '/workplace', $body);
+            $rows = UserManagerPlatform::POST($this->_hostname, $this->session->get('token'), '/'. $this->_endpoint, $body);
 
             switch ($rows->status) {
                 case 'success':
@@ -56,15 +59,14 @@ class WorkplaceController
             }
         }
 
-        return $this->container->view->render($response, '/interface/configuracoes/empresas/inserir.phtml', [
-            'endpoint'      => 'workplace',
-            'pagina'        => 'empresas',
+        return $this->container->view->render($response, $this->_template . '/inserir.phtml', [
+            'endpoint'      => $this->_endpoint,
+            'pagina'        => $this->_pagina,
             'menu_sistema'  => $this->_sistema,
             'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Nova Empresa',                     
+            'subtitulo'     => 'Nova '. $this->_subtitulo,                     
             'hostname'      => $this->_hostname,
-            'token'         => $this->session->get('token'),
-            'menu_sistema'  => 'configuracoes'          
+            'token'         => $this->session->get('token')       
         ]);
     }
 
@@ -72,12 +74,12 @@ class WorkplaceController
     {
         // Recuperando os dados pelo id
         $id = $args['id'];
-        $rows = UserManagerPlatform::GET($this->_hostname, $this->session->get('token'), '/workplace/'. $id);
-
-        if($request->isPost()){
-
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->session->get('token'), '/'. $this->_endpoint . '/' . $id);
+        
+        if($request->isPost())
+        {
             $body = $request->getParsedBody();
-            $rows = UserManagerPlatform::PUT($this->_hostname, $this->session->get('token'), '/workplace/'. $id, $body);
+            $rows = UserManagerPlatform::PUT($this->_hostname, $this->session->get('token'), '/'. $this->_endpoint .'/'. $id, $body);
 
             switch ($rows->status) {
                 case 'success':
@@ -92,12 +94,12 @@ class WorkplaceController
             }
         }
 
-        return $this->container->view->render($response, '/interface/configuracoes/empresas/editar.phtml', [
-            'endpoint'      => 'workplace',
-            'pagina'        => 'empresas',
+        return $this->container->view->render($response, $this->_template . '/editar.phtml', [
+            'endpoint'      => $this->_endpoint,
+            'pagina'        => $this->_pagina,
             'menu_sistema'  => $this->_sistema,
             'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Editar Empresa',           
+            'subtitulo'     => 'Editar '. $this->_subtitulo,           
             'hostname'      => $this->_hostname,
             'token'         => $this->session->get('token'),
             'id'            => $args['id'],
@@ -111,7 +113,7 @@ class WorkplaceController
         // Recuperando os dados pelo id
         $id = $args['id'];
 
-        $rows = UserManagerPlatform::DELETE($this->_hostname, $this->session->get('token'), '/workplace/', $id);
+        $rows = UserManagerPlatform::DELETE($this->_hostname, $this->session->get('token'), '/'. $this->_endpoint .'/', $id);
 
         switch ($rows->status) {
             case 'success':

@@ -15,23 +15,23 @@ defined('APPLICATION_ENV')
               (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV')
                                          : 'development'));
 
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '../vendor/autoload.php';
 
 // Set up configurations
-require __DIR__ . '/../src/constants.php';
+require __DIR__ . '../src/Settings/constants.php';
 
 // Instantiate the app
-$settings = require __DIR__ . '/../src/settings.php';
+$settings = require __DIR__ . '../src/Settings/settings.php';
 $app = new \Slim\App($settings);
 
 // Set up dependencies
-require __DIR__ . '/../src/dependencies.php';
+require __DIR__ . '../src/Settings/dependencies.php';
 
 // Register middleware
-require __DIR__ . '/../src/middleware.php';
+require __DIR__ . '../src/Settings/middleware.php';
 
 // Register routes
-require __DIR__ . '/../src/routes.php';
+require __DIR__ . '../src/Settings/routes.php';
 
 // Run app
 $app->run();
