@@ -23,6 +23,8 @@ class PermissionsController
         $this->_endpoint = 'permissions';
         $this->_template = '/interface/configuracoes/permissoes';
 
+        # Token do usuário
+        $this->_token = $this->session->get('token');
     }    
 
     public function listar(Request $request, Response $response, $args)
@@ -34,8 +36,7 @@ class PermissionsController
             'titulo'            => $this->_titulo,
             'subtitulo'         => 'Listar ' . $this->_subtitulo,
             'hostname'          => $this->_hostname,
-            'token'             => $this->session->get('token'),
-            'dataTablesColumns' => 'id, name'
+            'token'             => $this->_token
         ]);
     }
 
@@ -44,7 +45,7 @@ class PermissionsController
         if($request->isPost())
         {
             $body = $request->getParsedBody();
-            $rows = UserManagerPlatform::POST($this->_hostname, $this->session->get('token'), '/'. $this->_endpoint, $body);
+            $rows = UserManagerPlatform::POST($this->_hostname, $this->_token, '/'. $this->_endpoint, $body);
 
             switch ($rows->status) {
                 case 'success':
@@ -66,7 +67,7 @@ class PermissionsController
             'titulo'        => $this->_titulo,
             'subtitulo'     => 'Nova '. $this->_subtitulo,                     
             'hostname'      => $this->_hostname,
-            'token'         => $this->session->get('token')       
+            'token'         => $this->_token       
         ]);
     }
 
@@ -74,12 +75,12 @@ class PermissionsController
     {
         // Recuperando os dados pelo id
         $id = $args['id'];
-        $rows = UserManagerPlatform::GET($this->_hostname, $this->session->get('token'), '/'. $this->_endpoint . '/' . $id);
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
 
         if($request->isPost())
         {
             $body = $request->getParsedBody();
-            $rows = UserManagerPlatform::PUT($this->_hostname, $this->session->get('token'), '/'. $this->_endpoint .'/'. $id, $body);
+            $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/'. $this->_endpoint .'/'. $id, $body);
 
             switch ($rows->status) {
                 case 'success':
@@ -101,7 +102,7 @@ class PermissionsController
             'titulo'        => $this->_titulo,
             'subtitulo'     => 'Editar '. $this->_subtitulo,           
             'hostname'      => $this->_hostname,
-            'token'         => $this->session->get('token'),
+            'token'         => $this->_token,
             'id'            => $args['id'],
             'rows'          => $rows->data,
             'menu_sistema'  => 'configuracoes'        
@@ -113,7 +114,7 @@ class PermissionsController
         // Recuperando os dados pelo id
         $id = $args['id'];
 
-        $rows = UserManagerPlatform::DELETE($this->_hostname, $this->session->get('token'), '/'. $this->_endpoint .'/', $id);
+        $rows = UserManagerPlatform::DELETE($this->_hostname, $this->_token, '/'. $this->_endpoint .'/', $id);
 
         switch ($rows->status) {
             case 'success':
@@ -125,6 +126,33 @@ class PermissionsController
                 return $response->withStatus(400)->withHeader('Location', '../listar');
                 break;
         }       
-    }        
+    }
 
+    public function loadtable(Request $request, Response $response, $args)
+    {
+        $request = $request->getParams();
+
+        $start = ($request['start'] == 0)? 1 : $request['start'];
+        $length = ($request['length'] == 0)? 1 : $request['length'];
+        $page = (int)($start / $request['length']) + 1;
+
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint .'?page='. $page . '&limit='. $length);
+        $data = [];
+
+        foreach ($rows->data as $v) {
+            $arr   = [];
+            $arr[] = $v->id;
+            $arr[] = $v->name;
+            $arr[] = $v->description; 
+            $arr[] = '<a href="editar/'.$v->id.'" title="Editar"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;&nbsp;<a id="delete" title="Excluir"><i class="fa fa-remove"></i></a>';
+            $data[] = $arr;
+        }
+
+        $json_data = array( "draw"              =>  intval($request['draw']),
+                            "recordsTotal"      => $rows->total,
+                            "recordsFiltered"   => $rows->total,
+                            "data"              => (!empty($data))? $data : []);
+
+        echo json_encode($json_data);
+    }
 }

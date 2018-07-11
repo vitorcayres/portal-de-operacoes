@@ -11,12 +11,12 @@
                     <img src="{{ base_url() }}/assets/images/logo-2.png" />
                 </div>
             </li>
-            <li {% if menu_sistema == 'dashboard' %}class="active"{% endif %}>
+            <li {% if menu_sistema == 'dashboard' %} class="active" {% endif %}>
                 <a href="{{ base_url() }}/dashboard"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboard</span></a>
             </li>
             <!-- Menu Configurações do Sistema -->
-            <li {% if menu_sistema == 'configuracoes' %}class="active"{% endif %}>
-                <a href="#"><i class="fa fa-cog"></i><span class="nav-label">Configurações </span><span class="fa arrow"></span></a>
+            <li {% if menu_sistema == 'configuracoes' %} class="active" style="background-color:#ffffff;" {% endif %}>
+                <a href="#" {% if menu_sistema == 'configuracoes' %} class="active" style="background-color:#2DBCB5; color:#FFFFFF;" {% endif %}><i class="fa fa-cog"></i><span class="nav-label">Configurações </span><span class="fa arrow"></span></a>
                 <ul class="nav nav-second-level collapse" style="height: 0px;">
                     <li {% if pagina == 'empresas' %}class="active"{% endif %}>
                         <a href="{{ base_url() }}/configuracoes/empresas/listar"><i class="fa fa-home"></i><span class="nav-label">Empresas</span></a>

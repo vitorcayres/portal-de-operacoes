@@ -1,32 +1,17 @@
 $(document).ready(function() {
-
-    var dtCL = (dataTablesColumns)? dataTablesColumns : '';
-    var arrColumns = dtCL.split(",");
-
-    var dtColumns = [];
-    $.each(arrColumns, function( k, v) {
-      var data = {'data': v.replace(" ", ""), 'orderable': false};
-      dtColumns.push(data);
-    });
-
-    dtColumns.push({'data': null, 'orderable': false, 'defaultContent': '<a id="modify" title="Editar"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;&nbsp;<a id="delete" title="Excluir"><i class="fa fa-remove"></i></a>'});
-
-    // Datatables
     var table = $('#' + pagina).DataTable( {
         "processing": true,
         "serverSide": true,
         "responsive": true,
         "searching": false,
         "ajax":{
-            url :"../../ajax/loadtable?hostname="+hostname+"&token="+token+"&endpoint="+endpoint+"",
+            url :"loadtable",
             error: function(){
                 $("." + pagina + "-error").html("");
                 $("#" + pagina).append('<tbody class="employee-grid-error"><tr><th colspan="3">Nenhum registro encontrado</th></tr></tbody>');
                 $("#" + pagina + "_processing").css("display","none");
-
             }
         },
-        "columns": dtColumns,
         "language": {
           "sEmptyTable": "Nenhum registro encontrado",
           "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
@@ -52,18 +37,6 @@ $(document).ready(function() {
       }        
     } );
 
-    // Função para mostrar o detalhe de um registro
-    $('#'+pagina+' tbody').on('click', '#details', function () {
-        var data = table.row( $(this).parents('tr') ).data();
-        window.location = "detalhes/"+data.id;        
-    });
-
-    // Função para editar um registro
-    $('#'+pagina+' tbody').on('click', '#modify', function () {
-        var data = table.row( $(this).parents('tr') ).data();
-        window.location = "editar/"+ data.id;
-    });
-
     // Função para excluir um registro
     $('#'+pagina+' tbody').on('click', '#delete', function () {
         var data = table.row( $(this).parents('tr') ).data();
@@ -82,8 +55,8 @@ $(document).ready(function() {
 
             $.ajax({
               type: "POST",
-              url: "remover/"+data.id,
-              data: {id: data.id},            
+              url: "remover/"+data[0],
+              data: {id: data[0]},            
               success: function (data){
                 table.ajax.reload();
                 swal("Deletado!", "Seu registro foi excluído.", "success");
