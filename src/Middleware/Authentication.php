@@ -25,7 +25,7 @@ class Authentication
         }else{
             $id = $this->session["id"];
             $this->session->clear();
-            return $response->withStatus(200)->withHeader('Location', '../../auth/login');  
+            return $response->withStatus(200)->withHeader('Location', 'auth/login');  
         }
     }
 }

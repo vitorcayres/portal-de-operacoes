@@ -28,7 +28,7 @@
                                 <label class="col-sm-2 control-label">Empresa *:</label>
                                 <div class="col-sm-4">
                                     <select class="form-control" name="workplace_id" id="workplace_id" required="true">
-                                        <option selected=true value="">Selecione</option>
+                                        <option selected=true value="">Selecione uma opção...</option>
                                         {% for empresa in empresas %}
                                         <option value="{{empresa.id}}">{{empresa.name}}</option>
                                         {% endfor %}                                         
@@ -39,7 +39,7 @@
                                 <label class="col-sm-2 control-label">Perfil *:</label>
                                 <div class="col-sm-4">
                                     <select class="form-control" name="usergroup_id" id="usergroup_id" required="true">
-                                        <option selected=true value="">Selecione</option>
+                                        <option selected=true value="">Selecione uma opção...</option>
                                         {% for perfils in perfil %}
                                         <option value="{{perfils.id}}">{{perfils.name}}</option>
                                         {% endfor %}   
@@ -72,7 +72,7 @@
                                 <div class="col-sm-4">
                                     <select class="form-control" name="force_pass_change" id="force_pass_change" required="true">
                                         <option value="-1">Não</option>
-                                        <option  value="1">Sim</option>
+                                        <option value="1">Sim</option>
                                     </select>
                                 </div>
                             </div>

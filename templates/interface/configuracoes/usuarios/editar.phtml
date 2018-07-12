@@ -25,6 +25,54 @@
                                     <input type="text" class="form-control" name="name" required="true" value="{{ rows.name }}">
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Empresa *:</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control" name="workplace_id" id="workplace_id" required="true">
+                                        <option value="">Selecione uma opção...</option>
+                                        {% for empresa in empresas %}
+                                        <option value="{{empresa.id}}" {{ (empresa.id == rows.workplace_id) ? 'selected' : '' }}>{{empresa.name}}</option>
+                                        {% endfor %}                                         
+                                    </select>
+                                </div>
+                            </div> 
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Perfil *:</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control" name="usergroup_id" id="usergroup_id" required="true">
+                                        <option value="">Selecione uma opção...</option>
+                                        {% for perfils in perfil %}
+                                        <option value="{{perfils.id}}" {{ (perfils.id == rows.usergroup_id) ? 'selected' : '' }}>{{perfils.name}}</option>
+                                        {% endfor %}   
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Usuário *:</label>
+                                <div class="col-sm-4">
+                                    <input class="form-control" type="text" id="username" name="username" maxlength="45" required="true" value="{{ rows.username }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Alterar senha 1º acesso:</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control" name="force_pass_change" id="force_pass_change" required="true">
+                                        <option value="-1" {{ (rows.force_pass_change == '-1') ? 'selected' : '' }}>Não</option>
+                                        <option value="1" {{ (rows.force_pass_change == '1') ? 'selected' : '' }}>Sim</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Habilitado:</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control" name="enabled" class="select" id="enabled" required="true">
+                                        <option value="-1" {{ (rows.enabled == '-1') ? 'selected' : '' }}>Não</option>
+                                        <option value="1" {{ (rows.enabled == '1') ? 'selected' : '' }}>Sim</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="hidden" name="password" value="{{ rows.password }}">
+                            <input type="hidden" name="superuser" value="{{ rows.superuser }}">                         
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
                                 <div class="col-sm-4 col-sm-offset-2">

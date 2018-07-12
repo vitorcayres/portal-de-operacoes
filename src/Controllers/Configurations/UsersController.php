@@ -60,7 +60,7 @@ class UsersController
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ocorreu um erro para salvar o registro.');
                     return $response->withStatus(400)->withHeader('Location', 'inserir');                
                     break;
             }
@@ -85,6 +85,12 @@ class UsersController
         $id = $args['id'];
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
 
+        # GET: Empresas
+        $empresas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/workplace');
+
+        # GET: Perfil
+        $perfil = UserManagerPlatform::GET($this->_hostname, $this->_token, '/usergroup');
+
         if($request->isPost())
         {
             $body = $request->getParsedBody();
@@ -97,7 +103,7 @@ class UsersController
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ocorreu um erro para salvar o registro.');
                     return $response->withStatus(400)->withHeader('Location', '../editar/'. $id);
                     break;
             }
@@ -113,7 +119,8 @@ class UsersController
             'token'         => $this->_token,
             'id'            => $args['id'],
             'rows'          => $rows->data,
-            'menu_sistema'  => 'configuracoes'        
+            'empresas'      => $empresas->data,
+            'perfil'        => $perfil->data    
         ]);        
     }
 
