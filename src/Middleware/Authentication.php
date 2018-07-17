@@ -18,6 +18,7 @@ class Authentication
     public function __invoke($request, $response, $next)
     {
         $this->session = new \Adbar\Session;
+        $basePath = $request->getUri()->getBasePath();
 
         if(!empty($this->session->token)){
             $response = $next($request, $response);
@@ -25,7 +26,7 @@ class Authentication
         }else{
             $id = $this->session["id"];
             $this->session->clear();
-            return $response->withStatus(200)->withHeader('Location', 'auth/login');  
+            return $response->withStatus(200)->withHeader('Location', $basePath . '/auth/login');  
         }
     }
 }

@@ -16,12 +16,12 @@ class UsersController
         $this->session = new \Adbar\Session;
         
         # Parametros de Texto
-        $this->_sistema = 'configuracoes';
-        $this->_subtitulo  = 'Usuário';        
-        $this->_titulo  = 'Configurações :: ' . $this->_subtitulo;
-        $this->_pagina = 'usuarios';
-        $this->_endpoint = 'users';
-        $this->_template = '/interface/configuracoes/usuarios';
+        $this->_sistema     = 'configuracoes';
+        $this->_subtitulo   = 'Usuário';        
+        $this->_titulo      = 'Configurações :: ' . $this->_subtitulo;
+        $this->_pagina      = 'usuarios';
+        $this->_endpoint    = 'users';
+        $this->_template    = '/interface/configuracoes/usuarios';
 
         # Token do usuário
         $this->_token = $this->session->get('token');
@@ -60,8 +60,15 @@ class UsersController
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', 'Ocorreu um erro para salvar o registro.');
-                    return $response->withStatus(400)->withHeader('Location', 'inserir');                
+                    if(count((array)$rows->message) > 1){
+                        foreach ($rows->message as $message) {
+                            $this->container->flash->addMessage('error', $message[0]);                    
+                        }
+                    }
+                    else{
+                        $this->container->flash->addMessage('error', $rows->message);
+                    }
+                    return $response->withHeader('Location', 'inserir');                
                     break;
             }
         }
@@ -103,8 +110,15 @@ class UsersController
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', 'Ocorreu um erro para salvar o registro.');
-                    return $response->withStatus(400)->withHeader('Location', '../editar/'. $id);
+                    if(count((array)$rows->message) > 1){
+                        foreach ($rows->message as $message) {
+                            $this->container->flash->addMessage('error', $message[0]);                    
+                        }
+                    }
+                    else{
+                        $this->container->flash->addMessage('error', $rows->message);
+                    }
+                    return $response->withHeader('Location', '../editar/'. $id);
                     break;
             }
         }
@@ -137,8 +151,15 @@ class UsersController
                 break;
             
             default:
-                $this->container->flash->addMessage('error', $rows->message);
-                return $response->withStatus(400)->withHeader('Location', '../listar');
+                if(count((array)$rows->message) > 1){
+                    foreach ($rows->message as $message) {
+                        $this->container->flash->addMessage('error', $message[0]);                    
+                    }
+                }
+                else{
+                    $this->container->flash->addMessage('error', $rows->message);
+                }
+                return $response->withHeader('Location', '../listar');
                 break;
         }       
     }

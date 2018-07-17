@@ -25,6 +25,24 @@
                                     <input type="text" class="form-control" name="name" required="true" value="{{ rows.name }}">
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Descrição *:</label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" name="description" required="true" value="{{ rows.description }}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Permissões *:</label>
+                                {% for permissao in permissoes %}
+                                    <label class="col-sm-2 control-label"></label>
+                                    <div class="col-sm-10">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" name="permissions[]" value="{{permissao.id}}" {% for gp_permissao in gp_permissoes %} {% if gp_permissao.permission_id == permissao.id %} checked="true" {% endif %}{% endfor %}>
+                                            {{permissao.description}}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>                            
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
                                 <div class="col-sm-4 col-sm-offset-2">

@@ -53,7 +53,7 @@ class UserManagerPlatform {
             'Content-Type:application/json',
             'Authorization: ' . $token
         );
-       
+        
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));

@@ -42,6 +42,9 @@ class UsergroupController
 
     public function inserir(Request $request, Response $response, $args)
     {
+        # Permissões
+        $permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/permissions?limit=1000');
+
         if($request->isPost())
         {
             $body = $request->getParsedBody();
@@ -55,7 +58,7 @@ class UsergroupController
                 
                 default:
                     $this->container->flash->addMessage('error', $rows->message);
-                    return $response->withStatus(400)->withHeader('Location', 'inserir');                
+                    return $response->withHeader('Location', 'inserir');                
                     break;
             }
         }
@@ -67,15 +70,23 @@ class UsergroupController
             'titulo'        => $this->_titulo,
             'subtitulo'     => 'Nova '. $this->_subtitulo,                     
             'hostname'      => $this->_hostname,
-            'token'         => $this->_token       
+            'token'         => $this->_token,
+            'permissoes'    => $permissoes->data       
         ]);
     }
 
     public function editar(Request $request, Response $response, $args)
     {
+
         // Recuperando os dados pelo id
         $id = $args['id'];
-        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);        
+
+        # Grupo de Permissões
+        $gp_permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/usergroup_has_permission?id='.$id.'&limit=1000');
+
+        # Permissões
+        $permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/permissions?limit=1000');
 
         if($request->isPost())
         {
@@ -90,7 +101,7 @@ class UsergroupController
                 
                 default:
                     $this->container->flash->addMessage('error', $rows->message);
-                    return $response->withStatus(400)->withHeader('Location', '../editar/'. $id);
+                    return $response->withHeader('Location', '../editar/'. $id);
                     break;
             }
         }
@@ -105,7 +116,8 @@ class UsergroupController
             'token'         => $this->_token,
             'id'            => $args['id'],
             'rows'          => $rows->data,
-            'menu_sistema'  => 'configuracoes'        
+            'permissoes'    => $permissoes->data,
+            'gp_permissoes' => $gp_permissoes->data
         ]);        
     }
 
@@ -122,8 +134,7 @@ class UsergroupController
                 break;
             
             default:
-                $this->container->flash->addMessage('error', $rows->message);
-                return $response->withStatus(400)->withHeader('Location', '../listar');
+                return json_encode($rows);
                 break;
         }       
     }
@@ -137,6 +148,7 @@ class UsergroupController
         $page = (int)($start / $request['length']) + 1;
 
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint .'?page='. $page . '&limit='. $length);
+
         $data = [];
 
         foreach ($rows->data as $v) {

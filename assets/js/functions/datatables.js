@@ -58,8 +58,16 @@ $(document).ready(function() {
               url: "remover/"+data[0],
               data: {id: data[0]},            
               success: function (data){
-                table.ajax.reload();
-                swal("Deletado!", "Seu registro foi excluído.", "success");
+
+                var data = JSON.parse(data);               
+                console.log('1' + data.status);
+
+                if(data.status == 'true'){
+                  table.ajax.reload();
+                  swal("Deletado!", "Seu registro foi excluído.", "success");
+                }else{
+                  swal("Erro!", ""+ data.message +"", "error");                
+                }
               },
               error: function(data) {
                 return false;
