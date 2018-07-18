@@ -43,6 +43,7 @@ class LoginController
                         'name'                  => $auth->data->name,
                         'superuser'             => $auth->data->superuser,
                         'workplace_id'          => $auth->data->workplace_id,
+                        'permissions'           => $auth->data->permissions,
                         'last_change_password'  => $auth->data->last_change_password,
                         'create_date'           => $auth->data->create_date,
                         'updated_at'            => $auth->data->updated_at,
@@ -66,6 +67,11 @@ class LoginController
         $id = $this->session["id"];
         $this->session->clear();
         return $response->withStatus(200)->withHeader('Location', '../auth/login');  
+    }
+
+    public function error(Request $request, Response $response, $args)
+    {
+        return $this->container->view->render($response, '/interface/error.phtml');        
     }
 
 }

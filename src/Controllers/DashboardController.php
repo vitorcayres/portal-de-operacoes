@@ -20,8 +20,8 @@ class DashboardController
         $this->_subtitulo  = 'Dashboard';        
     }    
 
-    public function __invoke(Request $request, Response $response, $args){
-
+    public function __invoke(Request $request, Response $response, $args)
+    {
         return $this->container->view->render($response, '/interface/dashboard.phtml', [
             'pagina'            => 'dashboard',
             'menu_sistema'      => $this->_sistema,
