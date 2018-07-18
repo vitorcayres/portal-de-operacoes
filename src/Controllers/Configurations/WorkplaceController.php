@@ -16,12 +16,12 @@ class WorkplaceController
         $this->session = new \Adbar\Session;
         
         # Parametros de Texto
-        $this->_sistema = 'configuracoes';
-        $this->_subtitulo  = 'Empresa';        
-        $this->_titulo  = 'Configurações :: ' . $this->_subtitulo;
-        $this->_pagina = 'empresas';
-        $this->_endpoint = 'workplace';
-        $this->_template = '/interface/configuracoes/empresas';
+        $this->_sistema     = 'configuracoes';
+        $this->_subtitulo   = 'Empresa';        
+        $this->_titulo      = 'Configurações :: ' . $this->_subtitulo;
+        $this->_pagina      = 'empresas';
+        $this->_endpoint    = 'workplace';
+        $this->_template    = '/interface/configuracoes/empresas';
 
         # Token do usuário
         $this->_token = $this->session->get('token');

@@ -16,12 +16,12 @@ class UsergroupController
         $this->session = new \Adbar\Session;
         
         # Parametros de Texto
-        $this->_sistema = 'configuracoes';
-        $this->_subtitulo  = 'Perfil';        
-        $this->_titulo  = 'Configurações :: ' . $this->_subtitulo;
-        $this->_pagina = 'perfil';
-        $this->_endpoint = 'usergroup';
-        $this->_template = '/interface/configuracoes/perfil';
+        $this->_sistema     = 'configuracoes';
+        $this->_subtitulo   = 'Perfil';        
+        $this->_titulo      = 'Configurações :: ' . $this->_subtitulo;
+        $this->_pagina      = 'perfil';
+        $this->_endpoint    = 'usergroup';
+        $this->_template    = '/interface/configuracoes/perfil';
 
         # Token do usuário
         $this->_token = $this->session->get('token');
@@ -130,11 +130,13 @@ class UsergroupController
 
         switch ($rows->status) {
             case 'success':
-                return true;
+                return $response->withJson($rows, 200)
+                ->withHeader('Content-type', 'application/json');  
                 break;
             
             default:
-                return json_encode($rows);
+                return $response->withJson($rows, 400)
+                ->withHeader('Content-type', 'application/json');  
                 break;
         }       
     }

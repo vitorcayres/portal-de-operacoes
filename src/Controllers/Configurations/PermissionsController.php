@@ -16,12 +16,12 @@ class PermissionsController
         $this->session = new \Adbar\Session;
         
         # Parametros de Texto
-        $this->_sistema = 'configuracoes';
-        $this->_subtitulo  = 'Permissões';        
-        $this->_titulo  = 'Configurações :: ' . $this->_subtitulo;
-        $this->_pagina = 'permissoes';
-        $this->_endpoint = 'permissions';
-        $this->_template = '/interface/configuracoes/permissoes';
+        $this->_sistema     = 'configuracoes';
+        $this->_subtitulo   = 'Permissões';        
+        $this->_titulo      = 'Configurações :: ' . $this->_subtitulo;
+        $this->_pagina      = 'permissoes';
+        $this->_endpoint    = 'permissions';
+        $this->_template    = '/interface/configuracoes/permissoes';
 
         # Token do usuário
         $this->_token = $this->session->get('token');
@@ -55,7 +55,7 @@ class PermissionsController
                 
                 default:
                     $this->container->flash->addMessage('error', $rows->message);
-                    return $response->withStatus(400)->withHeader('Location', 'inserir');                
+                    return $response->withHeader('Location', 'inserir');                
                     break;
             }
         }
@@ -90,7 +90,7 @@ class PermissionsController
                 
                 default:
                     $this->container->flash->addMessage('error', $rows->message);
-                    return $response->withStatus(400)->withHeader('Location', '../editar/'. $id);
+                    return $response->withHeader('Location', '../editar/'. $id);
                     break;
             }
         }
@@ -118,14 +118,15 @@ class PermissionsController
 
         switch ($rows->status) {
             case 'success':
-                return true;
+                return $response->withJson($rows, 200)
+                ->withHeader('Content-type', 'application/json');  
                 break;
             
             default:
-                $this->container->flash->addMessage('error', $rows->message);
-                return $response->withStatus(400)->withHeader('Location', '../listar');
+                return $response->withJson($rows, 400)
+                ->withHeader('Content-type', 'application/json');  
                 break;
-        }       
+        }     
     }
 
     public function loadtable(Request $request, Response $response, $args)

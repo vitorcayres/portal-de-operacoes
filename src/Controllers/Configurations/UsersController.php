@@ -53,20 +53,19 @@ class UsersController
             $body = $request->getParsedBody();
             $rows = UserManagerPlatform::POST($this->_hostname, $this->_token, '/'. $this->_endpoint, $body);
 
-            switch ($rows->status) {
+              switch ($rows->status) {
                 case 'success':
                     $this->container->flash->addMessage('success', $rows->message);
                     return $response->withStatus(200)->withHeader('Location', 'listar');
                     break;
                 
                 default:
-                    if(count((array)$rows->message) > 1){
-                        foreach ($rows->message as $message) {
-                            $this->container->flash->addMessage('error', $message[0]);                    
+                    foreach ($rows->message as $key => $message) {
+                        if(array_key_exists(0, $message)){
+                            $this->container->flash->addMessage('error', $message[0]);
+                        }else{
+                            $this->container->flash->addMessage('error', $message);
                         }
-                    }
-                    else{
-                        $this->container->flash->addMessage('error', $rows->message);
                     }
                     return $response->withHeader('Location', 'inserir');                
                     break;
@@ -147,21 +146,15 @@ class UsersController
 
         switch ($rows->status) {
             case 'success':
-                return true;
+                return $response->withJson($rows, 200)
+                ->withHeader('Content-type', 'application/json');  
                 break;
             
             default:
-                if(count((array)$rows->message) > 1){
-                    foreach ($rows->message as $message) {
-                        $this->container->flash->addMessage('error', $message[0]);                    
-                    }
-                }
-                else{
-                    $this->container->flash->addMessage('error', $rows->message);
-                }
-                return $response->withHeader('Location', '../listar');
+                return $response->withJson($rows, 400)
+                ->withHeader('Content-type', 'application/json');  
                 break;
-        }       
+        }      
     }
 
     public function loadtable(Request $request, Response $response, $args)

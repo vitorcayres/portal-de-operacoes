@@ -33,20 +33,20 @@ class LoginController
 
                     # Criando sessão do usuário
                     $this->session->set(array(
-                        'id' => $auth->data->id,
-                        'enabled' => $auth->data->enabled,
-                        'force_pass_change' => $auth->data->force_pass_change,
-                        'password' => $auth->data->password,
-                        'token' => $rows->token,
-                        'usergroup_id' => $auth->data->usergroup_id,
-                        'username' => $auth->data->username,
-                        'name' => $auth->data->name,
-                        'superuser' => $auth->data->superuser,
-                        'workplace_id' => $auth->data->workplace_id,
-                        'last_change_password' => $auth->data->last_change_password,
-                        'create_date' => $auth->data->create_date,
-                        'updated_at' => $auth->data->updated_at,
-                        'expiration_at' => $auth->data->expiration_at
+                        'id'                    => $auth->data->id,
+                        'enabled'               => $auth->data->enabled,
+                        'force_pass_change'     => $auth->data->force_pass_change,
+                        'password'              => $auth->data->password,
+                        'token'                 => $rows->token,
+                        'usergroup_id'          => $auth->data->usergroup_id,
+                        'username'              => $auth->data->username,
+                        'name'                  => $auth->data->name,
+                        'superuser'             => $auth->data->superuser,
+                        'workplace_id'          => $auth->data->workplace_id,
+                        'last_change_password'  => $auth->data->last_change_password,
+                        'create_date'           => $auth->data->create_date,
+                        'updated_at'            => $auth->data->updated_at,
+                        'expiration_at'         => $auth->data->expiration_at
                     ));
 
                     return $response->withJson($rows, 200)->withHeader('Content-type', 'application/json');

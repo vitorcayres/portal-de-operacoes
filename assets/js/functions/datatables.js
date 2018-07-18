@@ -40,6 +40,7 @@ $(document).ready(function() {
     // Função para excluir um registro
     $('#'+pagina+' tbody').on('click', '#delete', function () {
         var data = table.row( $(this).parents('tr') ).data();
+        var id   = data[0];
 
         swal({
             title: "Você tem certeza?",
@@ -55,22 +56,15 @@ $(document).ready(function() {
 
             $.ajax({
               type: "POST",
-              url: "remover/"+data[0],
-              data: {id: data[0]},            
+              url: "remover/"+id,
+              data: {id: id},            
               success: function (data){
-
-                var data = JSON.parse(data);               
-                console.log('1' + data.status);
-
-                if(data.status == 'true'){
-                  table.ajax.reload();
-                  swal("Deletado!", "Seu registro foi excluído.", "success");
-                }else{
-                  swal("Erro!", ""+ data.message +"", "error");                
-                }
+                table.ajax.reload();
+                swal("Deletado!", "Seu registro foi excluído.", "success");
               },
               error: function(data) {
-                return false;
+                var rows = data.responseJSON;
+                swal("Erro!", ""+ rows.message +"", "error");
               }              
             });
         });
