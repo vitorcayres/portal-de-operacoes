@@ -35,6 +35,7 @@ class UsersController
             'menu_sistema'      => $this->_sistema,
             'titulo'            => $this->_titulo,
             'subtitulo'         => 'Listar ' . $this->_subtitulo,
+            'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
             'token'             => $this->_token
         ]);
@@ -77,7 +78,8 @@ class UsersController
             'pagina'        => $this->_pagina,
             'menu_sistema'  => $this->_sistema,
             'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Nova '. $this->_subtitulo,                     
+            'subtitulo'     => 'Nova '. $this->_subtitulo,
+            'sessao'        => $this->session,                                 
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
             'empresas'      => $empresas->data,
@@ -127,7 +129,8 @@ class UsersController
             'pagina'        => $this->_pagina,
             'menu_sistema'  => $this->_sistema,
             'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Editar '. $this->_subtitulo,           
+            'subtitulo'     => 'Editar '. $this->_subtitulo,
+            'sessao'        => $this->session,                     
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
             'id'            => $args['id'],
@@ -157,6 +160,47 @@ class UsersController
         }      
     }
 
+
+public function alterar_senha(Request $request, Response $response, $args){
+
+        if($request->isPost())
+        {
+            // Recuperando os dados pelo id
+            $id = $args['id'];
+
+            // Parametros da requisição
+            $params = (object) $request->getParams();
+
+            $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/change_password/', $id);
+
+            switch ($rows->status) {
+                case 'success':
+                    return $response->withJson($rows, 200)
+                    ->withHeader('Content-type', 'application/json');  
+                    break;
+                
+                default:
+                    return $response->withJson($rows, 400)
+                    ->withHeader('Content-type', 'application/json');  
+                    break;
+            }              
+        }
+
+        return $this->container->view->render($response, $this->_template . '/alterar-senha.phtml', [
+            'endpoint'          => $this->_endpoint,
+            'pagina'            => $this->_pagina,
+            'menu_sistema'      => $this->_sistema,
+            'titulo'            => $this->_titulo,
+            'subtitulo'         => 'Alterar Senha do ' . $this->_subtitulo,
+            'sessao'            => $this->session,            
+            'hostname'          => $this->_hostname,
+            'token'             => $this->_token,
+            'id'                => $args['id'],            
+        ]);
+
+}
+
+
     public function loadtable(Request $request, Response $response, $args)
     {
         $request = $request->getParams();
@@ -174,7 +218,7 @@ class UsersController
             $arr[] = $v->name;
             $arr[] = $v->username;
             $arr[] = ($v->enabled == '-1')? '<span class="badge badge-danger">Inativo</span>' : '<span class="badge badge-primary">Ativo</span>';
-            $arr[] = '<a href="alterarsenha/'.$v->id.'" title="Alterar Senha"><i class="fa fa-asterisk"></i></a>&nbsp;|&nbsp;&nbsp;<a href="editar/'.$v->id.'" title="Editar"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;&nbsp;<a id="delete" title="Excluir"><i class="fa fa-remove"></i></a>';
+            $arr[] = '<a href="alterar-senha/'.$v->id.'" title="Alterar Senha"><i class="fa fa-asterisk"></i></a>&nbsp;|&nbsp;&nbsp;<a href="editar/'.$v->id.'" title="Editar"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;&nbsp;<a id="delete" title="Excluir"><i class="fa fa-remove"></i></a>';
             $data[] = $arr;
         }
 

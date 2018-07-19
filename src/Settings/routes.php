@@ -33,6 +33,7 @@ $app->group('/configuracoes', function () {
 	    $this->map(['GET', 'POST'], 	'/inserir', 		App\Controllers\Configurations\UsersController::class .':inserir')->setName('inserir-usuario');
 	    $this->map(['GET', 'POST'], 	'/editar/{id}', 	App\Controllers\Configurations\UsersController::class .':editar')->setName('editar-usuario');
 	    $this->map(['POST', 'DELETE'], 	'/remover/{id}', 	App\Controllers\Configurations\UsersController::class .':remover')->setName('remover-usuario');
+	    $this->map(['GET', 'POST'], 	'/alterar-senha/{id}', 	App\Controllers\Configurations\UsersController::class .':alterar_senha')->setName('alterar-senha');	    
 	});	
 
 	# Perfil

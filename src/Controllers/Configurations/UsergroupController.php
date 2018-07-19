@@ -35,6 +35,7 @@ class UsergroupController
             'menu_sistema'      => $this->_sistema,
             'titulo'            => $this->_titulo,
             'subtitulo'         => 'Listar ' . $this->_subtitulo,
+            'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
             'token'             => $this->_token
         ]);
@@ -68,7 +69,8 @@ class UsergroupController
             'pagina'        => $this->_pagina,
             'menu_sistema'  => $this->_sistema,
             'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Nova '. $this->_subtitulo,                     
+            'subtitulo'     => 'Nova '. $this->_subtitulo,
+            'sessao'        => $this->session,                                
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
             'permissoes'    => $permissoes->data       
@@ -111,7 +113,8 @@ class UsergroupController
             'pagina'        => $this->_pagina,
             'menu_sistema'  => $this->_sistema,
             'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Editar '. $this->_subtitulo,           
+            'subtitulo'     => 'Editar '. $this->_subtitulo,
+            'sessao'        => $this->session,                      
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
             'id'            => $args['id'],

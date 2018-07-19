@@ -5,10 +5,10 @@
         </div>
         <ul class="nav navbar-top-links navbar-right">
             <li>
-                <span class="m-r-sm welcome-message" style="color:#fff;">Você está logado(a) como: <b>Admin</b></span>
+                <span class="m-r-sm welcome-message" style="color:#fff;">Você está logado(a) como: <b>{{ sessao.name }}</b></span>
             </li>
             <li>
-                <a href="" style="color:#fff;">
+                <a href="{{ base_url() }}/configuracoes/usuarios/alterar-senha/{{ sessao.id }}" style="color:#fff;">
                     <i class="fa fa-pencil"></i> Alterar Senha
                 </a>
             </li>

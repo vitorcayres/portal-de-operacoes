@@ -27,6 +27,7 @@ class DashboardController
             'menu_sistema'      => $this->_sistema,
             'titulo'            => $this->_titulo,
             'subtitulo'         => '' . $this->_subtitulo,
+            'sessao'            => $this->session
         ]);        
     }
 }
