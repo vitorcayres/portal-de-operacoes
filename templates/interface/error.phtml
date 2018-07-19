@@ -15,15 +15,13 @@
 </head>
 
 <body class="gray-bg">
-
-
     <div class="middle-box text-center animated fadeInDown">
         <h1>404</h1>
         <h3 class="font-bold">Pagina não Encontrada</h3>
 
         <div class="error-desc">
             Desculpe, mas a página que você está procurando não foi encontrada. Verifique a URL ou tente se logar novamente clicando no botão abaixo.
-            <br/><a href="{{ base_url() }}/auth/login" class="btn btn-primary m-t">Login</a>
+            <br/><a onclick="history.back()" class="btn btn-primary m-t">Voltar</a>
         </div>
     </div>
 </body>

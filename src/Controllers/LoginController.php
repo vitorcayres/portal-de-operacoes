@@ -41,10 +41,8 @@ class LoginController
                         'usergroup_id'          => $auth->data->usergroup_id,
                         'username'              => $auth->data->username,
                         'name'                  => $auth->data->name,
-                        'superuser'             => $auth->data->superuser,
                         'workplace_id'          => $auth->data->workplace_id,
                         'permissions'           => $auth->data->permissions,
-                        'last_change_password'  => $auth->data->last_change_password,
                         'create_date'           => $auth->data->create_date,
                         'updated_at'            => $auth->data->updated_at,
                         'expiration_at'         => $auth->data->expiration_at

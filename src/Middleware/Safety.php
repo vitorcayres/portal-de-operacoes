@@ -22,27 +22,31 @@ class Safety
         $route          = $request->getAttribute('route');
         $name           = $route->getName();
 
-        $response = $next($request, $response);
-        return $response;
+        switch (count($this->session->token)) {
+            case 1:
+                $permissions = $this->session->permissions; 
 
-        // switch (count($this->session->token)) {
-        //     case 1:
-        //         $permissions = $this->session->permissions;
-        //         foreach ($permissions as $perms) {
-        //             if (isSet($perms->name) && $perms->name == $name) {         
-        //                 $response = $next($request, $response);
-        //                 return $response;
-        //             }else{
-        //                 return $response->withHeader('Location', $basePath . '/auth/error');
-        //             }
-        //         }
-        //         break;
+                    foreach ($permissions as $i => $perms) {
+                        if ($perms->name == $name) {
+                            $busca = $perms;
+                            break;
+                        }
+                    }
+                      
+                    if (isset($busca)) {
+                        $response = $next($request, $response);
+                        return $response;
+                    } else {
+                        return $response->withHeader('Location', $basePath . '/auth/error');    
+                    }
+
+                break;
             
-        //     default:
-        //         $id = $this->session["id"];
-        //         $this->session->clear();
-        //         return $response->withStatus(200)->withHeader('Location', $basePath . '/auth/login');  
-        //         break;
-        // }
+            default:
+                $id = $this->session["id"];
+                $this->session->clear();
+                return $response->withStatus(200)->withHeader('Location', $basePath . '/auth/login');  
+                break;
+        }
     }
 }
