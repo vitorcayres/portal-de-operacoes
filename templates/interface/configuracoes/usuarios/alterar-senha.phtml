@@ -17,17 +17,17 @@
                     <h5>{{subtitulo}}</h5>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal" method="POST" action="{{ path_for('alterar-senha', {id: id}) }}">
+                        <form class="form-horizontal" id="form_alterar_senha" method="POST" action="{{ path_for('alterar-senha', {id: id}) }}">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Nova senha *:</label>
                                 <div class="col-sm-4">
-                                    <input type="text" class="form-control" name="password" required="true">
+                                    <input type="password" class="form-control" id="password" name="password" required="true" maxlength="12">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Confirme a senha *:</label>
                                 <div class="col-sm-4">
-                                    <input type="text" class="form-control" name="confirm_password" required="true">
+                                    <input type="password" class="form-control" name="confirm_password" required="true" maxlength="12">
                                 </div>
                             </div>                            
                             <div class="hr-line-dashed"></div>

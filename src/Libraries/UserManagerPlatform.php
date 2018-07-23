@@ -6,7 +6,6 @@ class UserManagerPlatform {
 
     public function GET($hostname, $token, $route)
     {
-
         $url = $hostname . $route;
 
         $header = array(
@@ -25,7 +24,6 @@ class UserManagerPlatform {
 
     public function POST($hostname, $token, $route, $data)
     {
-
         $url = $hostname . $route;
 
         $header = array(
@@ -46,7 +44,6 @@ class UserManagerPlatform {
 
     public function PUT($hostname, $token, $route, $data)
     {
-
         $url = $hostname . $route;
 
         $header = array(

@@ -170,20 +170,21 @@ public function alterar_senha(Request $request, Response $response, $args){
 
             // Parametros da requisição
             $params = (object) $request->getParams();
+            unset($params->confirm_password);
 
-            $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/change_password/', $id);
+            $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/change_password/'. $id, $params);
 
             switch ($rows->status) {
                 case 'success':
-                    return $response->withJson($rows, 200)
-                    ->withHeader('Content-type', 'application/json');  
+                    $this->container->flash->addMessage('success', $rows->message);
+                    return $response->withStatus(200)->withHeader('Location', '../listar');
                     break;
                 
                 default:
-                    return $response->withJson($rows, 400)
-                    ->withHeader('Content-type', 'application/json');  
+                    $this->container->flash->addMessage('error', $rows->message);
+                    return $response->withHeader('Location', '../editar/'. $id);
                     break;
-            }              
+            }             
         }
 
         return $this->container->view->render($response, $this->_template . '/alterar-senha.phtml', [
