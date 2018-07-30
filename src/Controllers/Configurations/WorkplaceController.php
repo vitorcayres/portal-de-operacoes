@@ -131,7 +131,7 @@ class WorkplaceController
         }       
     }
 
-    public function loadtable(Request $request, Response $response, $args)
+    public function loadTable(Request $request, Response $response, $args)
     {
         $request = $request->getParams();
 
