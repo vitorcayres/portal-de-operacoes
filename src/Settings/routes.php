@@ -1,4 +1,6 @@
 <?php
+# Login
+$app->get('/', function (){	header('Location: auth/login '); exit(); });
 
 # Authentication
 $app->group('/auth', function () {
@@ -9,10 +11,7 @@ $app->group('/auth', function () {
 });
 
 # Dashboard
-$app->get('/dashboard', 
-	App\Controllers\DashboardController::class)
-	->setName('dashboard')
-	->add(App\Middleware\Safety::class);
+$app->get('/dashboard', App\Controllers\DashboardController::class)->setName('dashboard')->add(App\Middleware\Safety::class);
 
 # Configurações da Interface
 $app->group('/configuracoes', function () {
