@@ -1,3 +1,7 @@
+/** 
+* Função: Carrega a listagem dos registros
+* Pagina: *todas as paginas
+*/
 $(document).ready(function() {
 if(pagina){
     var table = $('#' + pagina).DataTable( {

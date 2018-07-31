@@ -1,4 +1,7 @@
-// Alerta
+/** 
+* Função: Modal de alerta
+* Pagina: *todas as paginas
+*/
 $('.demo3').click(function () {
 	swal({
 		title: "Are you sure?",

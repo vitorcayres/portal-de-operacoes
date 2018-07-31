@@ -160,11 +160,10 @@ class UsersController
         }      
     }
 
-
-public function alterar_senha(Request $request, Response $response, $args){
-
-        if($request->isPost())
-        {
+    public function alterar_senha(Request $request, Response $response, $args)
+    {
+       if($request->isPost()){
+        
             // Recuperando os dados pelo id
             $id = $args['id'];
 
@@ -198,9 +197,7 @@ public function alterar_senha(Request $request, Response $response, $args){
             'token'             => $this->_token,
             'id'                => $args['id'],            
         ]);
-
-}
-
+    }
 
     public function loadTable(Request $request, Response $response, $args)
     {

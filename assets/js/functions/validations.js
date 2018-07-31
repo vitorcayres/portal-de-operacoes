@@ -1,41 +1,17 @@
-$("#login").click(function() {
-    var username = $('#username').val();
-    var password = $('#password').val();
-
-    if(username && password){
-        var data = {username:username, password: password}; 
-        $.ajax({
-            type: "POST",
-            url: "../auth/login",
-            dataType: 'json',
-            data: data,            
-            beforeSend: function(){
-                $('#login').empty().append('Entrando...');
-                $('.alert').hide();
-            },
-            success: function (data){
-                $(location).attr('href','../dashboard');
-            },
-            error: function(data) {
-                var obj = data.responseJSON;
-                $('#login').empty().append('Entrar');
-                $('.alert').show();
-                $('.alert').empty().append(obj.message);
-            }              
-        });
-    }else{
-        $('.alert').show();
-        $('.alert').empty().append('Preencha todos os campos acima!');
-    }
-});
-
-/* Validação do campo permissão */
+/** 
+* Função: Validação do campo permissão
+* Pagina: /alterar-senha
+*/
 $(".valida-permissao").keyup(function() {
 	$(this).val($(this).val().toLowerCase());   
 	$(this).val($(this).val().replace(" ", ""));
 	$(this).val($(this).val().replace(/[^a-z -]+/g,''));
 });
 
+/** 
+* Função: Alterar senha do usuário
+* Pagina: /alterar-senha
+*/
 jQuery.validator.setDefaults({
     debug: true,
     success: "valid",
