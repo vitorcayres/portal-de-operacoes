@@ -1,4 +1,5 @@
 $(document).ready(function() {
+if(pagina){
     var table = $('#' + pagina).DataTable( {
         "processing": true,
         "serverSide": true,
@@ -69,5 +70,5 @@ $(document).ready(function() {
             });
         });
     });
-    
+} 
 });

@@ -1,20 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="{{ base_url() }}/assets/images/icon.png">
-
-    <title>FS | Portal de Operações</title>
-
-    <link href="{{ base_url() }}/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ base_url() }}/assets/css/font-awesome.css" rel="stylesheet">
-    <link href="{{ base_url() }}/assets/css/animate.css" rel="stylesheet">
-    <link href="{{ base_url() }}/assets/css/style.css" rel="stylesheet">
-    <link href="{{ base_url() }}/assets/css/ladda-themeless.min.css" rel="stylesheet">
-
-</head>
+{% include('layout/header.phtml') %}
 
 <body class="gray-bg">
     <div class="middle-box text-center loginscreen animated fadeInDown">
@@ -35,81 +19,6 @@
             <p class="m-t"> <small>FS © 2018</small> </p>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="{{ base_url() }}/assets/js/plugins/spin.min.js"></script>
-    <script src="{{ base_url() }}/assets/js/plugins/ladda.min.js"></script>
-    <script src="{{ base_url() }}/assets/js/plugins/ladda.jquery.min.js"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function (){
-
-            // Bind normal buttons
-            $( '.ladda-button' ).ladda( 'bind', { timeout: 500 } );
-
-            // Bind progress buttons and simulate loading progress
-            Ladda.bind( '.progress-demo .ladda-button',{
-                callback: function( instance ){
-                    var progress = 0;
-                    var interval = setInterval( function(){
-                        progress = Math.min( progress + Math.random() * 0.1, 1 );
-                        instance.setProgress( progress );
-
-                        if( progress === 1 ){
-                            instance.stop();
-                            clearInterval( interval );
-                        }
-                    }, 200 );
-                }
-            });
-
-
-            var l = $( '.ladda-button-demo' ).ladda();
-
-            l.click(function(){
-                // Start loading
-                l.ladda( 'start' );
-
-                // Timeout example
-                // Do something in backend and then stop ladda
-                setTimeout(function(){
-                    l.ladda('stop');
-                },12000)
-            });
-        });
-
-        $("#login").click(function() {
-
-            var username = $('#username').val();
-            var password = $('#password').val();
-
-            if(username && password){
-
-                var data = {username:username, password: password}; 
-
-                $.ajax({
-                    type: "POST",
-                    url: "../auth/login",
-                    dataType: 'json',
-                    data: data,            
-                    beforeSend: function(){
-                        $('.alert').hide();
-                    },
-                    success: function (data){
-                        $(location).attr('href','{{ base_url() }}/dashboard');
-                    },
-                    error: function(data) {
-                        var obj = data.responseJSON;
-                        $('.alert').show();
-                        $('.alert').empty().append(obj.message);
-                    }              
-                });
-            }else{
-                $('.alert').show();
-                $('.alert').empty().append('Preencha todos os campos acima!');
-            }
-        });
-    </script>
-
 </body>
-</html>
+
+{% include('layout/footer.phtml') %}

@@ -27,7 +27,8 @@ gulp.task('default', ['minify-css', 'minify-plugins-js', 'minify-functions-js'])
  */
 gulp.task('watch', function() {
     gulp.watch(origemCSS, ['minify-css']);
-    gulp.watch(origemJS, ['minify-js']);
+    gulp.watch(origemPluginsJS, ['minify-plugins-js']);
+    gulp.watch(origemFuncoesJS, ['minify-functions-js']);    
 });
 
 /* tarefa que minifica o css */
