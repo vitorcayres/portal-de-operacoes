@@ -6,25 +6,34 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
+use App\Libraries\Permissions;
+use App\Helpers\Helpers_Interactivity_Partners;
 
 class PartnersController
 {
-    private $_hostname = GDU_HOSTNAME;
-
     public function __construct($container){
         $this->container = $container;
         $this->session = new \Adbar\Session;
         
         # Parametros de Texto
-        $this->_sistema     = 'configuracoes';
-        $this->_subtitulo   = 'Permissões';        
-        $this->_titulo      = 'Configurações :: ' . $this->_subtitulo;
-        $this->_pagina      = 'permissoes';
-        $this->_endpoint    = 'permissions';
-        $this->_template    = '/interface/configuracoes/permissoes';
+        $this->_sistema     = 'interatividade';
+        $this->_titulo      = 'Interatividade :: Parceiros';
+        $this->_subtitulo   = 'Parceiro';
+        $this->_pagina      = 'parceiros';
+        $this->_template    = '/interface/interatividade/parceiros';
 
-        # Token do usuário
-        $this->_token = $this->session->get('token');
+        # Variaveis de ambiente
+        $this->_hostname    = INTERACTIVITY_HOSTNAME;
+        $this->_token       = INTERACTIVITY_TOKEN;
+        $this->_endpoint    = 'partners';
+
+        # Permissões 
+        $this->_permissions = [
+            'listar'    => 'listar-parceiro',
+            'inserir'   => 'inserir-parceiro',
+            'editar'    => 'editar-parceiro',
+            'remover'   => 'remover-parceiro'
+        ];         
     }    
 
     public function listar(Request $request, Response $response, $args)
@@ -37,7 +46,8 @@ class PartnersController
             'subtitulo'         => 'Listar ' . $this->_subtitulo,
             'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
-            'token'             => $this->_token
+            'token'             => $this->_token,
+            'permissoes'        => $this->_permissions            
         ]);
     }
 
@@ -66,7 +76,7 @@ class PartnersController
             'pagina'        => $this->_pagina,
             'menu_sistema'  => $this->_sistema,
             'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Nova '. $this->_subtitulo,
+            'subtitulo'     => 'Novo '. $this->_subtitulo,
             'sessao'        => $this->session,                             
             'hostname'      => $this->_hostname,
             'token'         => $this->_token       
@@ -107,8 +117,7 @@ class PartnersController
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
             'id'            => $args['id'],
-            'rows'          => $rows->data,
-            'menu_sistema'  => 'configuracoes'        
+            'rows'          => $rows      
         ]);        
     }
 
@@ -147,8 +156,13 @@ class PartnersController
             $arr   = [];
             $arr[] = $v->id;
             $arr[] = $v->name;
-            $arr[] = $v->description; 
-            $arr[] = '<a href="editar/'.$v->id.'" title="Editar"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;&nbsp;<a id="delete" title="Excluir"><i class="fa fa-remove"></i></a>';
+            $arr[] = Helpers_Interactivity_Partners::partnerTypeView($v->type);
+
+            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+
+            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+
+            $arr[]  = $editar . $remover;
             $data[] = $arr;
         }
 

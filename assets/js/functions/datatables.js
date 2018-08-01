@@ -9,6 +9,7 @@ $(document).ready(function() {
         "serverSide": true,
         "responsive": true,
         "searching": false,
+        "ordering": false,
         "ajax":{
             url :"loadtable",
             error: function(){
