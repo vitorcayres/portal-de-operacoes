@@ -6,8 +6,12 @@
             <div class="row">
                 <div class="col-lg-12">
                 <div class="ibox float-e-margins">
-                    <div class="ibox-title">
-                        <a class="btn btn-success" type="button" href="{{ path_for('inserir-perfil') }}" ><i class="fa fa-plus"></i> Adicionar Perfil</a>
+                    <div class="ibox-title">                    
+                    {% for perms in sessao.permissions %}
+                        {% if perms.name == permissoes.inserir %}
+                            <a class="btn btn-success" type="button" href="{{ path_for('inserir-perfil') }}" ><i class="fa fa-plus"></i> Adicionar Perfil</a>
+                        {% endif %}
+                    {% endfor %}
                     </div>
                     <div class="ibox-content">
                         {% for item in messages.success %}

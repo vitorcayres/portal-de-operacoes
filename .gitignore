@@ -4,3 +4,4 @@
 /.htaccess
 /web/*
 /node_modules/*
+/src/Settings/constants.php

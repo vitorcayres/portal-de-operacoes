@@ -26,6 +26,15 @@ class UsersController
 
         # Token do usuário
         $this->_token = $this->session->get('token');
+
+        # Permissões 
+        $this->_permissions = [
+            'listar'    => 'listar-usuario',
+            'inserir'   => 'inserir-usuario',
+            'editar'    => 'editar-usuario',
+            'remover'   => 'remover-usuario',
+            'alterar-senha' => 'alterar-senha'
+        ];          
     }    
 
     public function listar(Request $request, Response $response, $args)
@@ -38,7 +47,8 @@ class UsersController
             'subtitulo'         => 'Listar ' . $this->_subtitulo,
             'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
-            'token'             => $this->_token
+            'token'             => $this->_token,
+            'permissoes'        => $this->_permissions
         ]);
     }
 
@@ -218,11 +228,11 @@ class UsersController
             $arr[] = $v->username;
             $arr[] = ($v->enabled == '-1')? '<span class="badge badge-danger">Inativo</span>' : '<span class="badge badge-primary">Ativo</span>';
 
-            $alterarsenha =  (Permissions::has_perm($this->session['permissions'], 'alterar-senha'))? '&nbsp;<a id="alterarsenha" title="Alterar Senha"><i class="fa fa-asterisk"></i></a>&nbsp;' : '';            
+            $alterarsenha =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['alterar-senha']))? '&nbsp;<a id="alterarsenha" title="Alterar Senha"><i class="fa fa-asterisk"></i></a>&nbsp;' : '';            
 
-            $editar =  (Permissions::has_perm($this->session['permissions'], 'editar-usuario'))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
-            $remover = (Permissions::has_perm($this->session['permissions'], 'remover-usuario'))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
 
             $arr[] = $alterarsenha . $editar . $remover;
 

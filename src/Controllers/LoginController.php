@@ -29,7 +29,7 @@ class LoginController
                 case 'success':
 
                     # Gerando token de autorização
-                    $auth = JWT::decode($rows->token, SECRET_KEY, array('HS256'));        
+                    $auth = JWT::decode($rows->token, GDU_SECRET_KEY, array('HS256'));        
 
                     # Criando sessão do usuário
                     $this->session->set(array(

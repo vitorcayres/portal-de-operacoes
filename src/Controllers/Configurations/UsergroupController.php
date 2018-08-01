@@ -26,6 +26,14 @@ class UsergroupController
 
         # Token do usuário
         $this->_token = $this->session->get('token');
+
+        # Permissões 
+        $this->_permissions = [
+            'listar'    => 'listar-perfil',
+            'inserir'   => 'inserir-perfil',
+            'editar'    => 'editar-perfil',
+            'remover'   => 'remover-perfil'
+        ];           
     }    
 
     public function listar(Request $request, Response $response, $args)
@@ -38,7 +46,8 @@ class UsergroupController
             'subtitulo'         => 'Listar ' . $this->_subtitulo,
             'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
-            'token'             => $this->_token
+            'token'             => $this->_token,
+            'permissoes'        => $this->_permissions
         ]);
     }
 
@@ -162,9 +171,9 @@ class UsergroupController
             $arr[] = $v->name;
             $arr[] = $v->description;
 
-            $editar =  (Permissions::has_perm($this->session['permissions'], 'editar-perfil'))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
-            $remover = (Permissions::has_perm($this->session['permissions'], 'remover-perfil'))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
 
             $arr[] = $editar . $remover;
             $data[] = $arr;

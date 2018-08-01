@@ -26,6 +26,14 @@ class WorkplaceController
 
         # Token do usuário
         $this->_token = $this->session->get('token');
+
+        # Permissões 
+        $this->_permissions = [
+            'listar'    => 'listar-empresa',
+            'inserir'   => 'inserir-empresa',
+            'editar'    => 'editar-empresa',
+            'remover'   => 'remover-empresa'
+        ];
     }    
 
     public function listar(Request $request, Response $response, $args)
@@ -38,7 +46,9 @@ class WorkplaceController
             'subtitulo'         => 'Listar ' . $this->_subtitulo,
             'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
-            'token'             => $this->_token
+            'token'             => $this->_token,
+            'permissoes'        => $this->_permissions
+
         ]);
     }
 
@@ -148,9 +158,9 @@ class WorkplaceController
             $arr[] = $v->id;
             $arr[] = $v->name;
 
-            $editar =  (Permissions::has_perm($this->session['permissions'], 'editar-perfil'))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
-            $remover = (Permissions::has_perm($this->session['permissions'], 'remover-perfil'))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
 
             $arr[] = $editar . $remover;
             $data[] = $arr;

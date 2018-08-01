@@ -31,7 +31,7 @@ require __DIR__ . '../src/Settings/dependencies.php';
 require __DIR__ . '../src/Settings/middleware.php';
 
 // Register routes
-require __DIR__ . '../src/Settings/routes.php';
+require __DIR__ . '../src/Settings/routes-manager.php';
 
 // Run app
 $app->run();

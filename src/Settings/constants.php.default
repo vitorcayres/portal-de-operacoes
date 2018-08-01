@@ -4,12 +4,17 @@ switch (APPLICATION_ENV) {
     * Configuração em Desenvolvimento
     **/	
     case 'development': 
-
+    # Caminho da Interface
     define('SITE_URL', 'http://localhost/novos-projetos/projeto-plataforma/portal-de-operacoes/public');
+
+    # Backend: Gerenciador de Usuarios
     define('GDU_HOSTNAME', 'http://localhost/novos-projetos/projeto-plataforma/gerenciador-de-usuarios/api/v1');
     define('GDU_TOKEN', 'Basic cm9vdDp0b29y');
-    define('SECRET_KEY', 'Fsas123@');
+    define('GDU_SECRET_KEY', 'Fsas123@');
     
+    # Backend: Interatividade
+    define('INTERACTIVITY_HOSTNAME', '');
+    define('INTERACTIVITY_TOKEN', '');    
 
     break;
     
