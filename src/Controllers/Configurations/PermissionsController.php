@@ -6,6 +6,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
+use App\Libraries\Permissions;
 
 class PermissionsController
 {
@@ -147,8 +148,13 @@ class PermissionsController
             $arr   = [];
             $arr[] = $v->id;
             $arr[] = $v->name;
-            $arr[] = $v->description; 
-            $arr[] = '<a href="editar/'.$v->id.'" title="Editar"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;&nbsp;<a id="delete" title="Excluir"><i class="fa fa-remove"></i></a>';
+            $arr[] = $v->description;
+
+            $editar =  (Permissions::has_perm($this->session['permissions'], 'editar-permissao'))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+
+            $remover = (Permissions::has_perm($this->session['permissions'], 'remover-permissao'))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+
+            $arr[] = $editar . $remover;
             $data[] = $arr;
         }
 

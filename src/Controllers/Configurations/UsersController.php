@@ -6,6 +6,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
+use App\Libraries\Permissions;
 
 class UsersController
 {
@@ -216,11 +217,19 @@ class UsersController
             $arr[] = $v->name;
             $arr[] = $v->username;
             $arr[] = ($v->enabled == '-1')? '<span class="badge badge-danger">Inativo</span>' : '<span class="badge badge-primary">Ativo</span>';
-            $arr[] = '<a href="alterar-senha/'.$v->id.'" title="Alterar Senha"><i class="fa fa-asterisk"></i></a>&nbsp;|&nbsp;&nbsp;<a href="editar/'.$v->id.'" title="Editar"><i class="fa fa-edit"></i></a>&nbsp;|&nbsp;&nbsp;<a id="delete" title="Excluir"><i class="fa fa-remove"></i></a>';
+
+            $alterarsenha =  (Permissions::has_perm($this->session['permissions'], 'alterar-senha'))? '&nbsp;<a id="alterarsenha" title="Alterar Senha"><i class="fa fa-asterisk"></i></a>&nbsp;' : '';            
+
+            $editar =  (Permissions::has_perm($this->session['permissions'], 'editar-usuario'))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+
+            $remover = (Permissions::has_perm($this->session['permissions'], 'remover-usuario'))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+
+            $arr[] = $alterarsenha . $editar . $remover;
+
             $data[] = $arr;
         }
 
-        $json_data = array( "draw"              =>  intval($request['draw']),
+        $json_data = array( "draw"              => intval($request['draw']),
                             "recordsTotal"      => $rows->total,
                             "recordsFiltered"   => $rows->total,
                             "data"              => (!empty($data))? $data : []);

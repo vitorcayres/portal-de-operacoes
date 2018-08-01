@@ -3,7 +3,7 @@
 * Pagina: *todas as paginas
 */
 $(document).ready(function() {
-if(pagina){
+  if(pagina){
     var table = $('#' + pagina).DataTable( {
         "processing": true,
         "serverSide": true,
@@ -42,8 +42,20 @@ if(pagina){
       }        
     } );
 
+    // Função para alterar senha do usuario
+    $('#'+pagina+' tbody').on('click', '#alterarsenha', function () {
+        var data = table.row( $(this).parents('tr') ).data();
+        window.location = 'alterar-senha/' + data[0];
+    });
+
+    // Função para editar um registro
+    $('#'+pagina+' tbody').on('click', '#editar', function () {
+        var data = table.row( $(this).parents('tr') ).data();
+        window.location = 'editar/' + data[0];
+    });  
+
     // Função para excluir um registro
-    $('#'+pagina+' tbody').on('click', '#delete', function () {
+    $('#'+pagina+' tbody').on('click', '#remover', function () {
         var data = table.row( $(this).parents('tr') ).data();
         var id   = data[0];
 
@@ -74,5 +86,5 @@ if(pagina){
             });
         });
     });
-} 
+  } 
 });
