@@ -7,9 +7,9 @@ use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
-use App\Helpers\Helpers_Interactivity_Channels;
+use App\Helpers\Helpers_Interactivity_News;
 
-class ChannelsController
+class NewsController
 {
     public function __construct($container){
         $this->container = $container;
@@ -17,22 +17,22 @@ class ChannelsController
         
         # Parametros de Texto
         $this->_sistema     = 'interatividade';
-        $this->_titulo      = 'Interatividade :: Canais';
-        $this->_subtitulo   = 'Canal';
-        $this->_pagina      = 'canais';
-        $this->_template    = '/interface/interatividade/canais';
+        $this->_titulo      = 'Interatividade :: Notícias';
+        $this->_subtitulo   = 'Notícia';
+        $this->_pagina      = 'noticias';
+        $this->_template    = '/interface/interatividade/noticias';
 
         # Variaveis de ambiente
         $this->_hostname    = INTERACTIVITY_HOSTNAME;
         $this->_token       = INTERACTIVITY_TOKEN;
-        $this->_endpoint    = 'channels';
+        $this->_endpoint    = 'news';
 
         # Permissões 
         $this->_permissions = [
-            'listar'    => 'listar-canal',
-            'inserir'   => 'inserir-canal',
-            'editar'    => 'editar-canal',
-            'remover'   => 'remover-canal'
+            'listar'    => 'listar-noticia',
+            'inserir'   => 'inserir-noticia',
+            'editar'    => 'editar-noticia',
+            'remover'   => 'remover-noticia'
         ];         
     }    
 
@@ -155,10 +155,13 @@ class ChannelsController
         foreach ($rows->data as $v) {
             $arr   = [];
             $arr[] = $v->id;
-            $arr[] = $v->name;
-            $arr[] = Helpers_Interactivity_Channels::offerById($v->offer->id);
-            $arr[] = $v->messagesPerDay;
-            $arr[] = Helpers_Interactivity_Channels::statusOffers($v->active);                                                               
+            $arr[] = Helpers_Interactivity_News::offerById($v->offer->id);
+            $arr[] = Helpers_Interactivity_News::channelById($v->channel->id);
+            $arr[] = '<textarea class="form-control" style="width: 100%; height: 70px; color: #31708f; background-color: #d9edf7; border-color: #bce8f1;" disabled>'. $v->message .'</textarea>';
+            $arr[] = Helpers_Interactivity_News::statusNews($v->status);
+            $arr[] = date('d/m/Y H:i:s', strtotime($v->scheduledAt));
+            $arr[] = date('d/m/Y H:i:s', strtotime($v->createdAt));
+            $arr[] = date('d/m/Y H:i:s', strtotime($v->updatedAt));
 
             $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 

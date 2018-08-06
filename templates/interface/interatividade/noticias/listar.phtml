@@ -9,7 +9,7 @@
                     <div class="ibox-title">
                     {% for perms in sessao.permissions %}
                         {% if perms.name == permissoes.inserir %}
-                            <a class="btn btn-success" type="button" href="{{ path_for('inserir-parceiro') }}"><i class="fa fa-plus"></i> Adicionar Parceiro</a>
+                            <a class="btn btn-success" type="button" href="{{ path_for('inserir-noticia') }}"><i class="fa fa-plus"></i> Adicionar Notícia</a>
                         {% endif %}
                     {% endfor %}
                     </div>
@@ -25,8 +25,13 @@
                                 <thead>
                                   <tr>
                                     <th style="width: 50px;">#</th>
-                                    <th>Nome</th>
-                                    <th>Tipo</th>
+                                    <th>Oferta</th>
+                                    <th>Canal</th>
+                                    <th>Mensagem</th>
+                                    <th>Status</th>
+                                    <th>Disparado</th>
+                                    <th>Criado em</th>
+                                    <th>Atualizado em</th>
                                     <th style="width: 50px;">Ações</th>                                    
                                   </tr>
                                 </thead>

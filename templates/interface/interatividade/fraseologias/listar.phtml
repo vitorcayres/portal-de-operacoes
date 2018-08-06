@@ -9,7 +9,7 @@
                     <div class="ibox-title">
                     {% for perms in sessao.permissions %}
                         {% if perms.name == permissoes.inserir %}
-                            <a class="btn btn-success" type="button" href="{{ path_for('inserir-parceiro') }}"><i class="fa fa-plus"></i> Adicionar Parceiro</a>
+                            <a class="btn btn-success" type="button" href="{{ path_for('inserir-parceiro') }}"><i class="fa fa-plus"></i> Adicionar Fraseologia</a>
                         {% endif %}
                     {% endfor %}
                     </div>
@@ -20,13 +20,74 @@
                             {{item}}
                         </div>
                         {% endfor %}
+
+                        <p>Filtros:</p>
+                        <form role="form" id="frmsearch">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <p class="font-bold">Campanhas</p>
+                                    <select class="form-control select2" name="campaignUuid" id="campaignUuid">
+                                        <option value="">[Todas as campanhas]</option>
+                                        <?php foreach ($view->campaignList->data as $k => $v) { ?>
+                                            <option value="<?php echo $v->uuid;?>"><?php echo $v->name;?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="font-bold">Produtos</p>
+                                    <select class="form-control select2" name="productId" id="productId">
+                                        <option value="">[Todos os produtos]</option>
+                                        <?php foreach ($view->productList as $key => $value) { ?>
+                                            <option value="<?php echo $value['id'];?>" <?php echo ($_GET['productId'] == $value['id'])? 'selected' : ''; ?>><?php echo $value['name'];?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="font-bold">LA</p>
+                                    <select id="shortNumber" name="shortNumber" class="form-control select2">
+                                        <option value="">[Todos os LA's]</option>
+                                        <?php foreach ($view->shortNumberList as $shortNumber) { ?>
+                                            <option value="<?php echo $shortNumber;?>" <?php echo ($_GET['shortNumber'] == $shortNumber)? 'selected' : ''; ?>><?php echo $shortNumber;?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="font-bold">Tipos</p>
+                                    <select class="form-control select2" name="type" id="type">
+                                        <option value="">[Todos os tipos]</option>
+                                        <?php foreach ($view->typesList as $type) { ?>
+                                            <option value="<?php echo $type->type;?>" title="<?php echo $type->description;?>" <?php echo ($_GET['type'] == $type->type)? 'selected' : ''; ?>><?php echo $type->brief_description;?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="font-bold">Operadora</p>
+                                    <select id="carrier" name="carrier" class="form-control select2">
+                                        <option value="">[Todas as operadoras]</option>
+                                        <?php foreach ($view->carrierList as $key => $value) { ?>
+                                            <option value="<?php echo $key;?>" <?php echo ($_GET['carrier'] == $key)? 'selected' : ''; ?>><?php echo $value;?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="font-bold">&nbsp;</p>
+                                    <button class="btn btn-white" type="button" id="btn_search">Pesquisar</button>
+                                </div>
+                            </div>
+                        </form>
+                        <hr>
+
+
                         <div class="table-responsive">
                             <table id="{{ pagina }}" class="table table-striped table-bordered table-hover">
                                 <thead>
                                   <tr>
                                     <th style="width: 50px;">#</th>
-                                    <th>Nome</th>
+                                    <th>Campanha</th>
+                                    <th>Produto</th>
+                                    <th style="width: 80px;">LA</th>
                                     <th>Tipo</th>
+                                    <th style="width: 80px;">Operadora</th>                                                                        
                                     <th style="width: 50px;">Ações</th>                                    
                                   </tr>
                                 </thead>

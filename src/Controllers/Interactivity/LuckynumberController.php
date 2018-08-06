@@ -7,9 +7,8 @@ use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
-use App\Helpers\Helpers_Interactivity_Channels;
 
-class ChannelsController
+class LuckynumberController
 {
     public function __construct($container){
         $this->container = $container;
@@ -17,22 +16,22 @@ class ChannelsController
         
         # Parametros de Texto
         $this->_sistema     = 'interatividade';
-        $this->_titulo      = 'Interatividade :: Canais';
-        $this->_subtitulo   = 'Canal';
-        $this->_pagina      = 'canais';
-        $this->_template    = '/interface/interatividade/canais';
+        $this->_titulo      = 'Interatividade :: Números da Sorte';
+        $this->_subtitulo   = 'Números da Sorte';
+        $this->_pagina      = 'luckynumber';
+        $this->_template    = '/interface/interatividade/luckynumber';
 
         # Variaveis de ambiente
         $this->_hostname    = INTERACTIVITY_HOSTNAME;
         $this->_token       = INTERACTIVITY_TOKEN;
-        $this->_endpoint    = 'channels';
+        $this->_endpoint    = 'lucky-number-configurations';
 
         # Permissões 
         $this->_permissions = [
-            'listar'    => 'listar-canal',
-            'inserir'   => 'inserir-canal',
-            'editar'    => 'editar-canal',
-            'remover'   => 'remover-canal'
+            'listar'    => 'listar-luckynumber',
+            'inserir'   => 'inserir-luckynumber',
+            'editar'    => 'editar-luckynumber',
+            'remover'   => 'remover-luckynumber'
         ];         
     }    
 
@@ -155,10 +154,9 @@ class ChannelsController
         foreach ($rows->data as $v) {
             $arr   = [];
             $arr[] = $v->id;
-            $arr[] = $v->name;
-            $arr[] = Helpers_Interactivity_Channels::offerById($v->offer->id);
-            $arr[] = $v->messagesPerDay;
-            $arr[] = Helpers_Interactivity_Channels::statusOffers($v->active);                                                               
+            $arr[] = $v->type;
+            $arr[] = $v->scenario;
+            $arr[] = $v->quantity;            
 
             $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 

@@ -7,9 +7,8 @@ use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
-use App\Helpers\Helpers_Interactivity_Channels;
 
-class ChannelsController
+class ProductsController
 {
     public function __construct($container){
         $this->container = $container;
@@ -17,27 +16,28 @@ class ChannelsController
         
         # Parametros de Texto
         $this->_sistema     = 'interatividade';
-        $this->_titulo      = 'Interatividade :: Canais';
-        $this->_subtitulo   = 'Canal';
-        $this->_pagina      = 'canais';
-        $this->_template    = '/interface/interatividade/canais';
+        $this->_titulo      = 'Interatividade :: Produtos';
+        $this->_subtitulo   = 'Produtos';
+        $this->_pagina      = 'produtos';
+        $this->_template    = '/interface/interatividade/produtos';
 
         # Variaveis de ambiente
         $this->_hostname    = INTERACTIVITY_HOSTNAME;
         $this->_token       = INTERACTIVITY_TOKEN;
-        $this->_endpoint    = 'channels';
+        $this->_endpoint    = 'products';
 
         # Permissões 
         $this->_permissions = [
-            'listar'    => 'listar-canal',
-            'inserir'   => 'inserir-canal',
-            'editar'    => 'editar-canal',
-            'remover'   => 'remover-canal'
+            'listar'    => 'listar-produto',
+            'detalhe'  => 'detalhe-produto'
         ];         
     }    
 
     public function listar(Request $request, Response $response, $args)
     {
+        
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
+
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'endpoint'          => $this->_endpoint,
             'pagina'            => $this->_pagina,
@@ -141,6 +141,71 @@ class ChannelsController
         }     
     }
 
+
+    public function detalhe(Request $request, Response $response, $args)
+    {
+        // Recuperando os dados pelo id
+        $id = $args['id'];
+
+        // Recuperando os produtos
+        $produto        = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
+
+        // Recuperando o canal do produto
+        $canal          = UserManagerPlatform::GET($this->_hostname, $this->_token, '/channels/' . $produto->channel->id);
+
+        // Recuperando o parceiro do produto
+        $parceiro       = UserManagerPlatform::GET($this->_hostname, $this->_token, '/partners/' . $produto->partner->id);
+
+        // Recuperando as fraseologias do produto
+        $fraseologias   = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies?productId=' . $id);
+        $arrFraseologias = [];
+
+        foreach ($fraseologias->data as $v) {
+            $arr = [];
+
+            $arr['id']          = $v->id;
+            $arr['carrier']     = $v->carrier;
+            $arr['type']        = $v->type;
+            $arr['message']     = $v->message;
+            $arr['createdAt']   = date('d/m/Y H:i:s', strtotime($v->createdAt));
+            $arr['updatedAt']   = date('d/m/Y H:i:s', strtotime($v->updatedAt));
+            $arrFraseologias[] = $arr;
+        }
+
+        $carriers = '';
+        foreach ($produto->carriers as $v){
+            $carriers.= $v->carrier . ': '. $v->shortNumber . ', ';
+        }
+
+        // Destruindo variaveis inutilizadas
+        unset($produto->uuid);
+        unset($produto->partner);
+        unset($produto->channel);      
+        unset($produto->productsUuids);
+        unset($produto->attributes);
+        unset($produto->messageExtra);
+        unset($produto->carriers);        
+
+        // Inserindo valores no array do produto
+        $produto->channels_name = $canal->name;
+        $produto->partners_name = $parceiro->name;
+        $produto->carriers      = $carriers;
+        $produto->fraseologies  = $arrFraseologias;
+
+        return $this->container->view->render($response, $this->_template . '/detalhe.phtml', [
+            'endpoint'      => $this->_endpoint,
+            'pagina'        => $this->_pagina,
+            'menu_sistema'  => $this->_sistema,
+            'titulo'        => $this->_titulo,
+            'subtitulo'     => 'Detalhe do Produto',
+            'sessao'        => $this->session,                    
+            'hostname'      => $this->_hostname,
+            'token'         => $this->_token,
+            'id'            => $args['id'],
+            'produto'       => $produto      
+        ]);        
+    }
+
     public function loadTable(Request $request, Response $response, $args)
     {
         $request = $request->getParams();
@@ -156,15 +221,11 @@ class ChannelsController
             $arr   = [];
             $arr[] = $v->id;
             $arr[] = $v->name;
-            $arr[] = Helpers_Interactivity_Channels::offerById($v->offer->id);
-            $arr[] = $v->messagesPerDay;
-            $arr[] = Helpers_Interactivity_Channels::statusOffers($v->active);                                                               
+            $arr[] = $v->type;                        
 
-            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+            $detalhes = (Permissions::has_perm($this->session['permissions'], $this->_permissions['detalhe']))? '&nbsp;<a href="detalhe/'.$v->id.'" title="Detalhes do Produto"><i class="fa fa-plus-circle"></i></a>&nbsp;' : '';
 
-            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
-
-            $arr[]  = $editar . $remover;
+            $arr[]  = $detalhes;
             $data[] = $arr;
         }
 

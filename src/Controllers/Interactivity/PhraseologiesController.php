@@ -7,9 +7,9 @@ use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
-use App\Helpers\Helpers_Interactivity_Channels;
+use App\Helpers\Helpers_Interactivity_Phraseologies;
 
-class ChannelsController
+class PhraseologiesController
 {
     public function __construct($container){
         $this->container = $container;
@@ -17,27 +17,45 @@ class ChannelsController
         
         # Parametros de Texto
         $this->_sistema     = 'interatividade';
-        $this->_titulo      = 'Interatividade :: Canais';
-        $this->_subtitulo   = 'Canal';
-        $this->_pagina      = 'canais';
-        $this->_template    = '/interface/interatividade/canais';
+        $this->_titulo      = 'Interatividade :: Fraseologias';
+        $this->_subtitulo   = 'Fraseologias';
+        $this->_pagina      = 'fraseologias';
+        $this->_template    = '/interface/interatividade/fraseologias';
 
-        # Variaveis de ambiente
+        # Variaveis de ambiente da API de Interatividade 
         $this->_hostname    = INTERACTIVITY_HOSTNAME;
         $this->_token       = INTERACTIVITY_TOKEN;
-        $this->_endpoint    = 'channels';
+        $this->_endpoint    = 'phraseologies';
+        $this->_la          = INTERACTIVITY_LA;
+        $this->_operadora   = INTERACTIVITY_CARRIER;        
+
+        # Variaveis de ambiente da API de Campanhas
+        $this->_hostname_campaign    = CAMPAIGN_HOSTNAME;
+        $this->_token_campaign       = CAMPAIGN_TOKEN;        
+        $this->_endpoint_campaign    = 'getcampaigns';
 
         # Permissões 
         $this->_permissions = [
-            'listar'    => 'listar-canal',
-            'inserir'   => 'inserir-canal',
-            'editar'    => 'editar-canal',
-            'remover'   => 'remover-canal'
+            'listar'    => 'listar-fraseologia',
+            'inserir'   => 'inserir-fraseologia',
+            'editar'    => 'editar-fraseologia',
+            'remover'   => 'remover-fraseologia'
         ];         
     }    
 
     public function listar(Request $request, Response $response, $args)
     {
+        // Todas as campanhas
+        $campanhas = UserManagerPlatform::GET($this->_hostname_campaign, $this->_token_campaign, '/'. $this->_endpoint_campaign);
+        $campanhas = Helpers_Interactivity_Phraseologies::getNameAndIdCampaign($campanhas);
+
+        // Todos os produtos
+        $produtos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/products?limit=10000');
+        $produtos = Helpers_Interactivity_Phraseologies::getNameAndIdProducts($produtos);
+
+        // Tipos de fraseologias
+        $tipos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies/all-types');
+
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'endpoint'          => $this->_endpoint,
             'pagina'            => $this->_pagina,
@@ -47,7 +65,12 @@ class ChannelsController
             'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
             'token'             => $this->_token,
-            'permissoes'        => $this->_permissions            
+            'permissoes'        => $this->_permissions,
+            'campanhas'         => $campanhas,
+            'produtos'          => $produtos,
+            'la'                => $this->_la,
+            'tipos'             => $tipos,
+            'operadora'         => $this->_operadora
         ]);
     }
 
@@ -149,16 +172,17 @@ class ChannelsController
         $length = ($request['length'] == 0)? 1 : $request['length'];
         $page = (int)($start / $request['length']) + 1;
 
-        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint .'?page='. $page . '&limit='. $length);
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint .'/all-grouped?page='. $page . '&limit='. $length);
         $data = [];
 
         foreach ($rows->data as $v) {
             $arr   = [];
             $arr[] = $v->id;
-            $arr[] = $v->name;
-            $arr[] = Helpers_Interactivity_Channels::offerById($v->offer->id);
-            $arr[] = $v->messagesPerDay;
-            $arr[] = Helpers_Interactivity_Channels::statusOffers($v->active);                                                               
+            $arr[] = $v->campaignName;
+            $arr[] = (!empty($v->product->id))? '' : '';            
+            $arr[] = $v->shortNumber;
+            $arr[] = $v->type->briefDescription;
+            $arr[] = '<span class="badge badge-plain">'. $v->carrier. '</span>';
 
             $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
