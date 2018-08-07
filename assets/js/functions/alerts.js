@@ -15,3 +15,7 @@ $('.demo3').click(function () {
 		swal("Deleted!", "Your imaginary file has been deleted.", "success");
 	});
 });
+
+$(".select2").select2({
+    allowClear: false
+});

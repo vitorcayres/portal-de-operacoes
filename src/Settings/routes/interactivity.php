@@ -65,8 +65,8 @@ $app->group('/interatividade', function () {
 		$this->map(['GET'], 		'/listar', 		App\Controllers\Interactivity\PhraseologiesController::class .':listar')->setName('listar-fraseologia');
 	    $this->map(['GET', 'POST'], '/inserir', 	App\Controllers\Interactivity\PhraseologiesController::class .':inserir')->setName('inserir-fraseologia');
 	    $this->map(['GET', 'POST'], '/editar/{id}', App\Controllers\Interactivity\PhraseologiesController::class .':editar')->setName('editar-fraseologia');
-	    $this->map(['POST', 'DELETE'],'/remover/{id}',App\Controllers\Interactivity\PhraseologiesController	::class .':remover')->setName('remover-fraseologia');
+	    $this->map(['POST', 'DELETE'],'/remover/{id}',App\Controllers\Interactivity\PhraseologiesController::class .':remover')->setName('remover-fraseologia');
+		$this->map(['GET'], 		'/publicar', 	App\Controllers\Interactivity\PhraseologiesController::class .':publicar')->setName('publicar-fraseologia');
 	});	
-
-
+	
 })->add(App\Middleware\Safety::class);

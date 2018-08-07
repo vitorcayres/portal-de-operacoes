@@ -87,5 +87,11 @@ $(document).ready(function() {
             });
         });
     });
+
+    // Função que faz a busca solicitada na tabela
+    $(".form-search").change(function() {
+        table.ajax.url("loadtable?" + $('#filterRows').serialize());
+        table.ajax.reload();
+    });
   } 
 });

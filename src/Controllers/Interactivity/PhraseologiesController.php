@@ -39,7 +39,8 @@ class PhraseologiesController
             'listar'    => 'listar-fraseologia',
             'inserir'   => 'inserir-fraseologia',
             'editar'    => 'editar-fraseologia',
-            'remover'   => 'remover-fraseologia'
+            'remover'   => 'remover-fraseologia',
+            'publicar'  => 'publicar-fraseologia'
         ];         
     }    
 
@@ -70,7 +71,7 @@ class PhraseologiesController
             'produtos'          => $produtos,
             'la'                => $this->_la,
             'tipos'             => $tipos,
-            'operadora'         => $this->_operadora
+            'operadoras'        => $this->_operadora
         ]);
     }
 
@@ -164,6 +165,11 @@ class PhraseologiesController
         }     
     }
 
+    public function publicar(Request $request, Response $response, $args)
+    {
+        die("AQUI");
+    }
+
     public function loadTable(Request $request, Response $response, $args)
     {
         $request = $request->getParams();
@@ -171,8 +177,31 @@ class PhraseologiesController
         $start = ($request['start'] == 0)? 1 : $request['start'];
         $length = ($request['length'] == 0)? 1 : $request['length'];
         $page = (int)($start / $request['length']) + 1;
+        unset($request['fraseologias_length']);
 
-        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint .'/all-grouped?page='. $page . '&limit='. $length);
+        if($page)
+            $parameters = "?page=". $page ."&limit=". $length;
+
+        $more = [];
+
+        $more = array(
+            'productId'     => (!empty($request['productId']))?     $request['productId'] : '',
+            'campaignUuid'  => (!empty($request['campaignUuid']))?  $request['campaignUuid'] : '',
+            'type'          => (!empty($request['type']))?          $request['type'] : '',
+            'carrier'       => (!empty($request['carrier']))?       $request['carrier'] : '',
+            'shortNumber'   => (!empty($request['shortNumber']))?   $request['shortNumber'] : ''
+        );
+
+        if($more){
+            if(!is_array($more)){ return false; }
+            foreach ($more as $k => $v) {
+                if(!empty($v)){
+                    $parameters .= "&". $k ."=". $v;
+                }
+            }
+        }
+
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint .'/all-grouped'. $parameters);
         $data = [];
 
         foreach ($rows->data as $v) {
@@ -182,7 +211,7 @@ class PhraseologiesController
             $arr[] = (!empty($v->product->id))? '' : '';            
             $arr[] = $v->shortNumber;
             $arr[] = $v->type->briefDescription;
-            $arr[] = '<span class="badge badge-plain">'. $v->carrier. '</span>';
+            $arr[] = Helpers_Interactivity_Phraseologies::badgeColorForCarrier($v->carrier);
 
             $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
