@@ -34,6 +34,9 @@ class PhraseologiesController
         $this->_token_campaign       = CAMPAIGN_TOKEN;        
         $this->_endpoint_campaign    = 'getcampaigns';
 
+        # Variaveis de ambiente da API de FlushPlatformUnifield
+        $this->_hostname_flush_pu    = PLATFORM_UNIFIELD_FLUSHALL_CACHE;
+
         # Permissões 
         $this->_permissions = [
             'listar'    => 'listar-fraseologia',
@@ -167,7 +170,20 @@ class PhraseologiesController
 
     public function publicar(Request $request, Response $response, $args)
     {
-        die("AQUI");
+        $rows = UserManagerPlatform::GET($this->_hostname_flush_pu, '', '');
+
+        switch ($rows->status) {
+            case 'OK':
+                return $response->withJson($rows, 200)
+                ->withHeader('Content-type', 'application/json');  
+                break;
+            
+            default:
+                return $response->withJson(['status' => false, 'message' => 'Ocorreu um erro ao publicar as fraseologias!'], 400)
+                ->withHeader('Content-type', 'application/json');  
+                break;
+        }       
+
     }
 
     public function loadTable(Request $request, Response $response, $args)

@@ -149,7 +149,25 @@ class PartnersController
         $length = ($request['length'] == 0)? 1 : $request['length'];
         $page = (int)($start / $request['length']) + 1;
 
-        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint .'?page='. $page . '&limit='. $length);
+        if($page)
+            $parameters = "?page=". $page ."&limit=". $length;
+
+        $more = [];
+
+        $more = array(
+            'type'     => (!empty($request['type']))? $request['type'] : '',
+        );
+
+        if($more){
+            if(!is_array($more)){ return false; }
+            foreach ($more as $k => $v) {
+                if(!empty($v)){
+                    $parameters .= "&". $k ."=". $v;
+                }
+            }
+        }        
+
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . $parameters);
         $data = [];
 
         foreach ($rows->data as $v) {
