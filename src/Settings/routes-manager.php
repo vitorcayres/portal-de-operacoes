@@ -6,6 +6,11 @@
 # Dashboard
 $app->get('/dashboard', App\Controllers\DashboardController::class)->setName('dashboard')->add(App\Middleware\Safety::class);
 
+# Ajax
+$app->group('/ajax', function () {
+	$this->map(['POST'], '/busca-canal',	App\Controllers\AjaxController::class .':getChannelsById');
+});
+
 # Rota: Autenticação do Usuário
 require __DIR__ . '../routes/login.php';
 

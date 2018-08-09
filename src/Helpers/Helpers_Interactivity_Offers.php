@@ -30,5 +30,42 @@ class Helpers_Interactivity_Offers{
 				return '<span class="badge badge-danger">Privado</span>';
 				break;
 		}
-	}  	
+	}
+	
+	/** 
+	* Função: Tratativa para retornar somente o id e o nome dos parceiros
+	* Pagina: parceiros
+	*/
+	public function getNameAndIdPartners($params) {
+		
+        $data = [];
+        foreach ($params->data as $v) {    
+            $arr = array(
+                'id' => $v->id,
+                'name' => $v->name
+            );
+
+            $data[] = $arr;
+        }
+        return $data;
+	}
+
+	/** 
+	* Função: Tratativa para retornar somente o id e o nome das ofertas
+	* Pagina: ofertas
+	*/
+	public function getNameAndIdOffers($params) {
+		
+        $data = [];
+        foreach ($params->data as $v) {    
+            $arr = array(
+                'id' => $v->id,
+                'name' => $v->name,
+                'description' => $v->description
+            );
+
+            $data[] = $arr;
+        }
+        return $data;
+	}	
 }

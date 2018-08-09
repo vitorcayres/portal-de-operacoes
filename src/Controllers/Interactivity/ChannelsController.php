@@ -8,6 +8,7 @@ use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
 use App\Helpers\Helpers_Interactivity_Channels;
+use App\Helpers\Helpers_Interactivity_Offers;
 
 class ChannelsController
 {
@@ -38,6 +39,14 @@ class ChannelsController
 
     public function listar(Request $request, Response $response, $args)
     {
+        // Todos os canais
+        $canais = UserManagerPlatform::GET($this->_hostname, $this->_token, '/channels?limit=1000');
+        $canais = Helpers_Interactivity_Channels::getNameAndIdChannels($canais);
+
+        // Todas as ofertas
+        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
+        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
+
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'endpoint'          => $this->_endpoint,
             'pagina'            => $this->_pagina,
@@ -47,7 +56,9 @@ class ChannelsController
             'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
             'token'             => $this->_token,
-            'permissoes'        => $this->_permissions            
+            'permissoes'        => $this->_permissions,
+            'ofertas'           => $ofertas,
+            'canais'            => $canais  
         ]);
     }
 
@@ -149,7 +160,27 @@ class ChannelsController
         $length = ($request['length'] == 0)? 1 : $request['length'];
         $page = (int)($start / $request['length']) + 1;
 
-        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint .'?page='. $page . '&limit='. $length);
+        if($page)
+            $parameters = "?page=". $page ."&limit=". $length;
+
+        $more = [];
+
+        $more = array(
+            'name'            => (!empty($request['name']))? $request['name'] : '',
+            'offerId'         => (!empty($request['offerId']))? $request['offerId'] : '',
+            'messagesPerDay'  => (!empty($request['messagesPerDay']))? $request['messagesPerDay'] : ''                                    
+        );
+
+        if($more){
+            if(!is_array($more)){ return false; }
+            foreach ($more as $k => $v) {
+                if(!empty($v)){
+                    $parameters .= "&". $k ."=". $v;
+                }
+            }
+        }
+
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . $parameters);
         $data = [];
 
         foreach ($rows->data as $v) {

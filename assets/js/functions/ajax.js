@@ -32,3 +32,22 @@ $("#login").click(function() {
         $('.alert').empty().append('Preencha todos os campos acima!');
     }
 });
+
+/** 
+* Função: Recupera o canal equivalente pelo id da oferta
+* Pagina: noticias
+*/
+$("#offerId").change(function() {
+    var id = $(this).val();
+
+    $('#channelId').empty();
+    $('#channelId').append($('<option>').text("[CARREGANDO...]"));
+
+    $.post(base_url + "/ajax/busca-canal", {"id": id}, function( data ) {
+          $('#channelId').empty();
+          $('#channelId').append($('<option>').text("[FILTRAR PELO CANAL]").attr('value', 0));
+        $.each(data, function(i, obj) {
+            $('#channelId').append($('<option>').text(obj.name).attr('value', obj.id));
+        });
+    });
+});

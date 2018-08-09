@@ -38,6 +38,15 @@ class OffersController
 
     public function listar(Request $request, Response $response, $args)
     {
+
+        // Todas as ofertas
+        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
+        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
+
+        // Todos os parceiros
+        $parceiros = UserManagerPlatform::GET($this->_hostname, $this->_token, '/partners?limit=1000');
+        $parceiros = Helpers_Interactivity_Offers::getNameAndIdPartners($parceiros);      
+
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'endpoint'          => $this->_endpoint,
             'pagina'            => $this->_pagina,
@@ -47,7 +56,9 @@ class OffersController
             'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
             'token'             => $this->_token,
-            'permissoes'        => $this->_permissions            
+            'permissoes'        => $this->_permissions,
+            'parceiros'         => $parceiros,
+            'ofertas'           => $ofertas        
         ]);
     }
 
@@ -155,7 +166,10 @@ class OffersController
         $more = [];
 
         $more = array(
-            'type'     => (!empty($request['type']))? $request['type'] : '',
+            'name'          => (!empty($request['name']))? str_replace(" ", "-", $request['name']) : '',
+            'description'   => (!empty($request['description']))? $request['description'] : '',
+            'partnerId'     => (!empty($request['partnerId']))? $request['partnerId'] : '',
+            'public'        => (!empty($request['public']))? is_string($request['public']) : ''                                    
         );
 
         if($more){

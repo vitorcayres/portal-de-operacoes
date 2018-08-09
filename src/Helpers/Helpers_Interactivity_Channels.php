@@ -31,5 +31,23 @@ class Helpers_Interactivity_Channels
 				return '<span class="badge badge-danger">Inativo</span>';
 				break;
 		}
-	}  	
+	}
+
+	/** 
+	* Função: Tratativa para retornar somente o id e o nome dos canais
+	* Pagina: canais
+	*/
+	public function getNameAndIdChannels($params) {
+		
+        $data = [];
+        foreach ($params->data as $v) {    
+            $arr = array(
+                'id' => $v->id,
+                'name' => $v->name
+            );
+
+            $data[] = $arr;
+        }
+        return $data;
+	}
 }
