@@ -4,7 +4,6 @@
 
     <div class="wrapper wrapper-content animated fadeInRight">
         <div class="row">
-
             <div class="col-lg-12">
                 <div class="ibox float-e-margins">
                     <div class="ibox-title">
@@ -43,12 +42,18 @@
                             </tr>
                             {% endfor %}
                             </tbody>
-                        </table>
 
+                            {% if produto.fraseologies == false %}
+                            <tbody>
+                                <tr>
+                                    <td colspan="6" align="center">Nenhum registro encontrado</td>
+                                </tr>
+                            </tbody>
+                            {% endif %}
+                        </table>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 

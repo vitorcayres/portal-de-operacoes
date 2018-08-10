@@ -149,48 +149,51 @@ class ProductsController
 
         // Recuperando os produtos
         $produto        = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
+        
+        if (!isset($produto->status)) {
+        
+            // Recuperando o canal do produto
+            $canal      = UserManagerPlatform::GET($this->_hostname, $this->_token, '/channels/' . $produto->channel->id);
 
-        // Recuperando o canal do produto
-        $canal          = UserManagerPlatform::GET($this->_hostname, $this->_token, '/channels/' . $produto->channel->id);
+            // Recuperando o parceiro do produto
+            $parceiro   = UserManagerPlatform::GET($this->_hostname, $this->_token, '/partners/' . $produto->partner->id);
 
-        // Recuperando o parceiro do produto
-        $parceiro       = UserManagerPlatform::GET($this->_hostname, $this->_token, '/partners/' . $produto->partner->id);
+            // Recuperando as fraseologias do produto
+            $fraseologias   = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies?productId=' . $id);
+            $arrFraseologias = [];
 
-        // Recuperando as fraseologias do produto
-        $fraseologias   = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies?productId=' . $id);
-        $arrFraseologias = [];
+            foreach ($fraseologias->data as $v) {
+                $arr = [];
 
-        foreach ($fraseologias->data as $v) {
-            $arr = [];
+                $arr['id']          = $v->id;
+                $arr['carrier']     = $v->carrier;
+                $arr['type']        = $v->type;
+                $arr['message']     = $v->message;
+                $arr['createdAt']   = date('d/m/Y H:i:s', strtotime($v->createdAt));
+                $arr['updatedAt']   = date('d/m/Y H:i:s', strtotime($v->updatedAt));
+                $arrFraseologias[] = $arr;
+            }
 
-            $arr['id']          = $v->id;
-            $arr['carrier']     = $v->carrier;
-            $arr['type']        = $v->type;
-            $arr['message']     = $v->message;
-            $arr['createdAt']   = date('d/m/Y H:i:s', strtotime($v->createdAt));
-            $arr['updatedAt']   = date('d/m/Y H:i:s', strtotime($v->updatedAt));
-            $arrFraseologias[] = $arr;
+            $carriers = '';
+            foreach ($produto->carriers as $v){
+                $carriers.= $v->carrier . ': '. $v->shortNumber . ', ';
+            }
+
+            // Destruindo variaveis inutilizadas
+            unset($produto->uuid);
+            unset($produto->partner);
+            unset($produto->channel);      
+            unset($produto->productsUuids);
+            unset($produto->attributes);
+            unset($produto->messageExtra);
+            unset($produto->carriers);        
+
+            // Inserindo valores no array do produto
+            $produto->channels_name = $canal->name;
+            $produto->partners_name = $parceiro->name;
+            $produto->carriers      = $carriers;
+            $produto->fraseologies  = $arrFraseologias;
         }
-
-        $carriers = '';
-        foreach ($produto->carriers as $v){
-            $carriers.= $v->carrier . ': '. $v->shortNumber . ', ';
-        }
-
-        // Destruindo variaveis inutilizadas
-        unset($produto->uuid);
-        unset($produto->partner);
-        unset($produto->channel);      
-        unset($produto->productsUuids);
-        unset($produto->attributes);
-        unset($produto->messageExtra);
-        unset($produto->carriers);        
-
-        // Inserindo valores no array do produto
-        $produto->channels_name = $canal->name;
-        $produto->partners_name = $parceiro->name;
-        $produto->carriers      = $carriers;
-        $produto->fraseologies  = $arrFraseologias;
 
         return $this->container->view->render($response, $this->_template . '/detalhe.phtml', [
             'endpoint'      => $this->_endpoint,
