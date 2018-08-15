@@ -88,3 +88,38 @@ $('.poupup').click(function () {
         });
     });
 });
+
+/** 
+* Função: Mascara de horas
+* Pagina: canais
+*/
+var mask = function (val) {
+    val = val.split(":");
+    return (parseInt(val[0]) > 19)? "HZ:M0" : "H0:M0";
+}
+
+pattern = {
+    onKeyPress: function(val, e, field, options) {
+        field.mask(mask.apply({}, arguments), options);
+    },
+    translation: {
+        'H': { pattern: /[0-2]/, optional: false },
+        'Z': { pattern: /[0-3]/, optional: false },
+        'M': { pattern: /[0-5]/, optional: false}
+    }
+};
+
+$("#time").mask(mask, pattern);
+
+/** 
+* Função: Validar somente numero no campo
+* Pagina: todas as paginas
+*/
+function somenteNumeros(num) {
+    var er = /[^0-9]/;
+    er.lastIndex = 0;
+    var campo = num;
+    if (er.test(campo.value)) {
+      campo.value = "";
+    }
+}

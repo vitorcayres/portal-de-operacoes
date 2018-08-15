@@ -51,3 +51,48 @@ $("#offerId").change(function() {
         });
     });
 });
+
+/** 
+* Função: Recupera o parceiro equivalente pelo id da oferta
+* Pagina: canais
+*/
+$("#offer").change(function() {
+    var id = $(this).find(':selected').attr('data-partner-id');
+
+    $('#partner').empty();
+    $.post(base_url + "/ajax/busca-parceiro", {id: id}, function( data ) {
+          $('#partner').empty();
+        $.each(data, function(i, obj) {
+            $('#partner').append($('<option>').text(obj.name).attr('value', obj.id));
+        });
+    });
+});
+
+/** 
+* Função: Adiciona a data de envio no calendario
+* Pagina: canais
+*/
+$('#add').click( function() {
+    var weekday = $("#weekday").val();
+    var time = $("#time").val();
+
+    if($("#weekday").val() != "" && $("#time").val() != "" && !$("#ipt_"+weekday+"_"+time.replace(':', '')).size()){
+        var div = $("<div id='div_"+weekday+"_"+time.replace(':', '')+"'><span class='badge badge-primary'>"+ time +" <i class='fa fa-times' id='remove_"+weekday+"_"+time.replace(':', '')+"'></i></span><input type='hidden' id='ipt_"+weekday+"_"+time.replace(':', '')+"' value='"+ time +"' name='schedulingRules["+ weekday +"][]' /></div>");
+
+        $("#td-"+weekday).append(div);   
+        
+        $("#remove_"+weekday+"_"+time.replace(':', '')+"").click(function(){
+            $("#div_"+weekday+"_"+time.replace(':', '')+"").remove();
+        });
+    }
+});
+
+/** 
+* Função: Remove a data de envio no calendario
+* Pagina: canais
+*/
+$(document).ready(function(){
+    $(".fa.fa-times").click(function(){
+        $(this).parent().parent().remove();
+    });
+});

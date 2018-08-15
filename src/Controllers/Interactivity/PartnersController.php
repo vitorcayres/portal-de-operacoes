@@ -58,14 +58,14 @@ class PartnersController
             $body = $request->getParsedBody();
             $rows = UserManagerPlatform::POST($this->_hostname, $this->_token, '/'. $this->_endpoint, $body);
 
-            switch ($rows->status) {
-                case 'success':
-                    $this->container->flash->addMessage('success', $rows->message);
+            switch ($rows->http_code) {
+                case '201':
+                    $this->container->flash->addMessage('success', 'Registro criado com sucesso!');
                     return $response->withStatus(200)->withHeader('Location', 'listar');
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
                     return $response->withHeader('Location', 'inserir');                
                     break;
             }
@@ -94,14 +94,14 @@ class PartnersController
             $body = $request->getParsedBody();
             $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/'. $this->_endpoint .'/'. $id, $body);
 
-            switch ($rows->status) {
-                case 'success':
-                    $this->container->flash->addMessage('success', $rows->message);
+            switch ($rows->http_code) {
+                case '200':
+                    $this->container->flash->addMessage('success', 'Registro alterado com sucesso!');
                     return $response->withStatus(200)->withHeader('Location', '../listar');
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
                     return $response->withHeader('Location', '../editar/'. $id);
                     break;
             }
@@ -128,8 +128,8 @@ class PartnersController
 
         $rows = UserManagerPlatform::DELETE($this->_hostname, $this->_token, '/'. $this->_endpoint .'/', $id);
 
-        switch ($rows->status) {
-            case 'success':
+        switch ($rows->http_code) {
+            case '204':
                 return $response->withJson($rows, 200)
                 ->withHeader('Content-type', 'application/json');  
                 break;

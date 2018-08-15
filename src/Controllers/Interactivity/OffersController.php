@@ -64,19 +64,25 @@ class OffersController
 
     public function inserir(Request $request, Response $response, $args)
     {
+        // Todos os parceiros
+        $parceiros = UserManagerPlatform::GET($this->_hostname, $this->_token, '/partners?limit=1000');
+        $parceiros = Helpers_Interactivity_Offers::getNameAndIdPartners($parceiros);           
+
         if($request->isPost())
         {
             $body = $request->getParsedBody();
+            $body['partner'] = ['id' => $body['partner']];
+
             $rows = UserManagerPlatform::POST($this->_hostname, $this->_token, '/'. $this->_endpoint, $body);
 
-            switch ($rows->status) {
-                case 'success':
-                    $this->container->flash->addMessage('success', $rows->message);
+            switch ($rows->http_code) {
+                case '201':
+                    $this->container->flash->addMessage('success', 'Registro inserido com sucesso!');
                     return $response->withStatus(200)->withHeader('Location', 'listar');
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
                     return $response->withHeader('Location', 'inserir');                
                     break;
             }
@@ -87,15 +93,20 @@ class OffersController
             'pagina'        => $this->_pagina,
             'menu_sistema'  => $this->_sistema,
             'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Novo '. $this->_subtitulo,
+            'subtitulo'     => 'Nova '. $this->_subtitulo,
             'sessao'        => $this->session,                             
             'hostname'      => $this->_hostname,
-            'token'         => $this->_token       
+            'token'         => $this->_token,
+            'parceiros'     => $parceiros               
         ]);
     }
 
     public function editar(Request $request, Response $response, $args)
     {
+        // Todos os parceiros
+        $parceiros = UserManagerPlatform::GET($this->_hostname, $this->_token, '/partners?limit=1000');
+        $parceiros = Helpers_Interactivity_Offers::getNameAndIdPartners($parceiros);    
+
         // Recuperando os dados pelo id
         $id = $args['id'];
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
@@ -103,16 +114,18 @@ class OffersController
         if($request->isPost())
         {
             $body = $request->getParsedBody();
+            $body['partner'] = ['id' => $body['partner']];
+
             $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/'. $this->_endpoint .'/'. $id, $body);
 
-            switch ($rows->status) {
-                case 'success':
-                    $this->container->flash->addMessage('success', $rows->message);
+            switch ($rows->http_code) {
+                case '200':
+                    $this->container->flash->addMessage('success', 'Registro alterado com sucesso!');
                     return $response->withStatus(200)->withHeader('Location', '../listar');
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
                     return $response->withHeader('Location', '../editar/'. $id);
                     break;
             }
@@ -128,7 +141,8 @@ class OffersController
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
             'id'            => $args['id'],
-            'rows'          => $rows      
+            'rows'          => $rows,
+            'parceiros'     => $parceiros             
         ]);        
     }
 
@@ -139,8 +153,8 @@ class OffersController
 
         $rows = UserManagerPlatform::DELETE($this->_hostname, $this->_token, '/'. $this->_endpoint .'/', $id);
 
-        switch ($rows->status) {
-            case 'success':
+        switch ($rows->http_code) {
+            case '204':
                 return $response->withJson($rows, 200)
                 ->withHeader('Content-type', 'application/json');  
                 break;

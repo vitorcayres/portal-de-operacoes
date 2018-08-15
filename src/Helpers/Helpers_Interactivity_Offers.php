@@ -18,6 +18,19 @@ class Helpers_Interactivity_Offers{
 	}  
 
 	/** 
+	* Função: Recupera a oferta por ID
+	* Pagina: ofertas
+	*/
+	public function offerById($params) {
+
+        // Recuperando os dados pelo id
+        $rows = UserManagerPlatform::GET(INTERACTIVITY_HOSTNAME, INTERACTIVITY_TOKEN, '/offers/' . $params);
+        return $rows->name;
+	}  
+
+
+
+	/** 
 	* Função: Visibilidade da oferta
 	* Pagina: ofertas
 	*/
@@ -61,7 +74,8 @@ class Helpers_Interactivity_Offers{
             $arr = array(
                 'id' => $v->id,
                 'name' => $v->name,
-                'description' => $v->description
+                'description' => $v->description,
+                'partner_id' => $v->partner->id
             );
 
             $data[] = $arr;

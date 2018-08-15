@@ -9,7 +9,7 @@
                     <div class="ibox-title">
                     {% for perms in sessao.permissions %}
                         {% if perms.name == permissoes.inserir %}
-                            <a class="btn btn-success" type="button" href="{{ path_for('inserir-parceiro') }}"><i class="fa fa-plus"></i> Adicionar Oferta</a>
+                            <a class="btn btn-success" type="button" href="{{ path_for('inserir-oferta') }}"><i class="fa fa-plus"></i> Adicionar Oferta</a>
                         {% endif %}
                     {% endfor %}
                     </div>

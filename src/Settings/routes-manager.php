@@ -9,6 +9,7 @@ $app->get('/dashboard', App\Controllers\DashboardController::class)->setName('da
 # Ajax
 $app->group('/ajax', function () {
 	$this->map(['POST'], '/busca-canal',	App\Controllers\AjaxController::class .':getChannelsById');
+	$this->map(['POST'], '/busca-parceiro',	App\Controllers\AjaxController::class .':getPartnersById');	
 });
 
 # Rota: Autenticação do Usuário

@@ -64,19 +64,26 @@ class ChannelsController
 
     public function inserir(Request $request, Response $response, $args)
     {
+        // Todas as ofertas
+        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
+        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
+
         if($request->isPost())
         {
             $body = $request->getParsedBody();
+            $body['partner'] = ['id' => $body['partner']];
+            $body['offer'] = ['id' => $body['offer']];            
+
             $rows = UserManagerPlatform::POST($this->_hostname, $this->_token, '/'. $this->_endpoint, $body);
 
-            switch ($rows->status) {
-                case 'success':
-                    $this->container->flash->addMessage('success', $rows->message);
+            switch ($rows->http_code) {
+                case '201':
+                    $$this->container->flash->addMessage('success', 'Registro inserido com sucesso!');
                     return $response->withStatus(200)->withHeader('Location', 'listar');
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
                     return $response->withHeader('Location', 'inserir');                
                     break;
             }
@@ -90,29 +97,45 @@ class ChannelsController
             'subtitulo'     => 'Novo '. $this->_subtitulo,
             'sessao'        => $this->session,                             
             'hostname'      => $this->_hostname,
-            'token'         => $this->_token       
+            'token'         => $this->_token,
+            'ofertas'       => $ofertas                   
         ]);
     }
 
     public function editar(Request $request, Response $response, $args)
     {
+        // Todas as ofertas
+        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
+        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
+
         // Recuperando os dados pelo id
         $id = $args['id'];
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
+        
+        $offerData = Helpers_Interactivity_Offers::offerById($rows->offer->id);
+        $partnerData = Helpers_Interactivity_Offers::partnerById($rows->partner->id);
+
+
+        echo "<pre>";
+        print_r($rows);
+        die();
 
         if($request->isPost())
         {
             $body = $request->getParsedBody();
+            $body['partner'] = ['id' => $body['partner']];
+            $body['offer'] = ['id' => $body['offer']];            
+
             $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/'. $this->_endpoint .'/'. $id, $body);
 
             switch ($rows->status) {
                 case 'success':
-                    $this->container->flash->addMessage('success', $rows->message);
+                    $$this->container->flash->addMessage('success', 'Registro alterado com sucesso!');
                     return $response->withStatus(200)->withHeader('Location', '../listar');
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
                     return $response->withHeader('Location', '../editar/'. $id);
                     break;
             }
@@ -128,7 +151,8 @@ class ChannelsController
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
             'id'            => $args['id'],
-            'rows'          => $rows      
+            'rows'          => $rows,
+            'ofertas'       => $ofertas            
         ]);        
     }
 
