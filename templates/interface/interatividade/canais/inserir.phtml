@@ -74,14 +74,10 @@
                                     <div class="row">
                                         <div class="col-sm-2 control-label">
                                             <select id="weekday" class="form-control" required="true">
-                                                <option value="">Selecione uma opção...</option>
-                                                <option value="sunday">Domingo</option>
-                                                <option value="monday">Segunda-Feira</option>
-                                                <option value="tuesday">Terça-Feira</option>
-                                                <option value="wednesday">Quarta-Feira</option>
-                                                <option value="thursday">Quinta-Feira</option>
-                                                <option value="friday">Sexta-Feira</option>
-                                                <option value="saturday">Sábado</option>
+                                                <option value="">[Selecione uma opção...]</option>
+                                                {% for key, value in datas %}
+                                                <option value="{{ key }}">{{ value }}</option>
+                                                {% endfor %}
                                             </select>
                                         </div>
                                         <div class="col-sm-2 control-label">

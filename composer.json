@@ -20,7 +20,8 @@
         "firebase/php-jwt": "^5.0",
         "slim/flash": "^0.4.0",
         "bryanjhv/slim-session": "~3.0",
-        "adbario/slim-secure-session-middleware": "^1.3"
+        "adbario/slim-secure-session-middleware": "^1.3",
+        "zendframework/zend-soap": "^2.7"
     },
     "require-dev": {
         "phpunit/phpunit": ">=4.8 < 6.0"

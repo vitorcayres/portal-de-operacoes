@@ -28,8 +28,6 @@ class Helpers_Interactivity_Offers{
         return $rows->name;
 	}  
 
-
-
 	/** 
 	* Função: Visibilidade da oferta
 	* Pagina: ofertas

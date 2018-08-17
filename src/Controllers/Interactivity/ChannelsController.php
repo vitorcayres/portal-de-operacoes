@@ -29,12 +29,24 @@ class ChannelsController
         $this->_endpoint    = 'channels';
 
         # Permissões 
-        $this->_permissions = [
+        $this->_permissoes = [
             'listar'    => 'listar-canal',
             'inserir'   => 'inserir-canal',
             'editar'    => 'editar-canal',
             'remover'   => 'remover-canal'
-        ];         
+        ];
+
+        # Lista de Dias
+        $this->_dias_da_semana = [
+            'sunday'    => 'Domingo', 
+            'monday'    => 'Segunda-Feira',
+            'tuesday'   => 'Terça-Feira',
+            'wednesday' => 'Quarta-Feira',
+            'thursday'  => 'Quinta-Feira',
+            'friday'    => 'Sexta-Feira', 
+            'saturday'  => 'Sábado'
+        ];
+
     }    
 
     public function listar(Request $request, Response $response, $args)
@@ -56,7 +68,7 @@ class ChannelsController
             'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
             'token'             => $this->_token,
-            'permissoes'        => $this->_permissions,
+            'permissoes'        => $this->_permissoes,
             'ofertas'           => $ofertas,
             'canais'            => $canais  
         ]);
@@ -98,7 +110,8 @@ class ChannelsController
             'sessao'        => $this->session,                             
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
-            'ofertas'       => $ofertas                   
+            'ofertas'       => $ofertas,
+            'datas'         => $this->_dias_da_semana                  
         ]);
     }
 
@@ -115,10 +128,8 @@ class ChannelsController
         $offerData = Helpers_Interactivity_Offers::offerById($rows->offer->id);
         $partnerData = Helpers_Interactivity_Offers::partnerById($rows->partner->id);
 
-
-        echo "<pre>";
-        print_r($rows);
-        die();
+        $rows->partner->name = $partnerData;
+        $rows->offer->name = $offerData;
 
         if($request->isPost())
         {
@@ -128,8 +139,8 @@ class ChannelsController
 
             $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/'. $this->_endpoint .'/'. $id, $body);
 
-            switch ($rows->status) {
-                case 'success':
+            switch ($rows->http_code) {
+                case '200':
                     $$this->container->flash->addMessage('success', 'Registro alterado com sucesso!');
                     return $response->withStatus(200)->withHeader('Location', '../listar');
                     break;
@@ -152,7 +163,9 @@ class ChannelsController
             'token'         => $this->_token,
             'id'            => $args['id'],
             'rows'          => $rows,
-            'ofertas'       => $ofertas            
+            'ofertas'       => $ofertas,
+            'datas'         => $this->_dias_da_semana,
+            'agendamento'   => (array) $rows->schedulingRules     
         ]);        
     }
 
@@ -163,8 +176,8 @@ class ChannelsController
 
         $rows = UserManagerPlatform::DELETE($this->_hostname, $this->_token, '/'. $this->_endpoint .'/', $id);
 
-        switch ($rows->status) {
-            case 'success':
+        switch ($rows->http_code) {
+            case '204':
                 return $response->withJson($rows, 200)
                 ->withHeader('Content-type', 'application/json');  
                 break;
@@ -215,9 +228,9 @@ class ChannelsController
             $arr[] = $v->messagesPerDay;
             $arr[] = Helpers_Interactivity_Channels::statusOffers($v->active);                                                               
 
-            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissoes['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
-            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissoes['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
 
             $arr[]  = $editar . $remover;
             $data[] = $arr;

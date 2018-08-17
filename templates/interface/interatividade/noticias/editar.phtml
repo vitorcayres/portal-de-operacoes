@@ -18,24 +18,82 @@
                     <h5>{{subtitulo}}</h5>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal" method="POST" action="{{ path_for('editar-parceiro', {id: id}) }}">
+                        <form class="form-horizontal" method="POST" action="{{ path_for('editar-noticia', {id: id}) }}">
+
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Nome *:</label>
-                                <div class="col-sm-4">
-                                    <input type="text" class="form-control" name="name" required="true" value="{{ rows.name }}">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Tipo *:</label>
-                                <div class="col-sm-4">
-                                <select class="form-control" name="type" id="type" required="true">
-                                    <option selected="true" value="">Selecione um tipo...</option>
-                                        <option value="MEDIA" {% if rows.type == 'MEDIA'%} selected="true" {% endif %}>Mídia</option>
-                                        <option value="CONTENT" {% if rows.type == 'CONTENT'%} selected="true" {% endif %}>Conteúdo</option>
-                                        <option value="MEDIA_AND_CONTENT" {% if rows.type == 'MEDIA_AND_CONTENT'%} selected="true" {% endif %}>Mídia/Conteúdo</option>
+                                <label class="col-md-2 control-label">Oferta *:</label>
+                                <div class="col-md-4">
+                                    <select id="news_offer" name="offer" class="form-control select2" required="true">
+                                        <option value="">Selecione uma opção...</option>
+                                        {% for oferta in ofertas %}
+                                            <option value="{{ oferta.id }}" {% if rows.offer.id == oferta.id %} selected="true" {% endif %}>{{ oferta.name }}</option>
+                                        {% endfor %}                                        
                                     </select>
                                 </div>
-                            </div>                             
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Canal *:</label>
+                                <div class="col-md-4">
+                                    <select class="form-control" name="channel" id="channel">
+                                        <option value="{{ rows.channel.id }}">{{ rows.channel.name }}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Post ID:</label>
+                                <div class="col-md-4">
+                                    <input class="form-control" type="text" id="extRef" name="extRef" maxlength="100" onkeypress="validate(event)">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label" for="url">URL:</label>
+                                <div class="col-lg-4">
+                                    <input class="form-control" type="text" id="url" name="url" maxlength="50">
+                                </div>
+                                <div class="col-lg-4">
+                                    <button class="btn btn-primary" type="button" id="urlShorter">Encurtar URL</button>
+                                </div>
+                            </div>
+
+                            <div class="form-group short-url-group">
+                                <label class="col-lg-2 control-label" for="shortUrl">URL Curta:</label>
+                                <div class="col-lg-4">
+                                    <input class="form-control" type="text" id="shortUrl" name="shortUrl" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-2 control-label">Mensagem *:</label>
+                                <div class="col-md-4">
+                                    <textarea id="message" name="message" class="form-control" maxlength="160" style="height: 150px; width: 494px;">{{ rows.message }}</textarea><strong><small class="caracteres"></small></strong>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Enviar agora: *:</label>
+                                <div class="col-sm-10">
+                                    <div><label> <input type="radio" name="dispatchNow" id="dispatchNow-1" value="1">Sim</label></div>
+                                    <div><label> <input type="radio" name="dispatchNow" id="dispatchNow-0" value="0" checked="checked">Não</label></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Data Programada *:</label>
+                                <div class="col-sm-10">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <input type="date" id="date" name="date" class="form-control" required="true" value="{{ rows.date }}">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="text" class="form-control" id="time" name="hour" placeholder="HH:MM" required="true" value="{{ rows.hour }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
                                 <div class="col-sm-4 col-sm-offset-2">

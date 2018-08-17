@@ -96,3 +96,76 @@ $(document).ready(function(){
         $(this).parent().parent().remove();
     });
 });
+
+/** 
+* Função: Remove a data de envio no calendario
+* Pagina: noticias
+*/
+$('#news_offer').on('change', function(){
+    var id = $(this).val();
+
+    document.getElementById("message").value="";
+    document.getElementById("channel").value="";
+    $('#channel').empty();
+
+    $.post(base_url + "/ajax/busca-canal", {"id": id}, function( data ) {
+        $('#channel').empty();
+        $.each(data, function(i, obj) {
+            $('#channel').append($('<option>').text(obj.name).attr('value', obj.id));
+
+            var _textArea = document.getElementById("message");
+            var _selectedData="";
+
+            for(i=0; i<document.getElementById("channel").length; i++) {
+                var _listElement = document.getElementById("channel")[i];
+                if(_listElement.selected) {
+                    _selectedData = _selectedData + _listElement.text + ': ';
+                }
+            }
+            _textArea.value=_selectedData;
+        });
+    });
+});
+
+$(function(){
+    $('.short-url-group').css('display', 'none');
+    $('#urlShorter').click(function() {
+        var url = $('#url').val();
+
+        $('.short-url-group').css('display', '');
+        $('#shortUrl').val('Carregando...');
+
+        $.ajax({
+            url: base_url + "/ajax/encurta-url",
+            data: {
+                "url": url
+            },
+            method: 'post',
+            dataType: 'json',
+            success: function(data) {
+                $('#shortUrl').val(data.message);
+                document.getElementById("message").value += document.getElementById('shortUrl').value + ' ';
+            },
+            error: function() {
+                $('#shortUrl').val('Ocorreu um erro. Tente novamente.');
+            }
+        });
+    });
+});
+
+$('input:radio[name="dispatchNow"]').change(function() {
+    if ($(this).val() == 1) {
+        $("#date").val("");
+        $('#date').prop('disabled', true);
+        $("#time").val("");
+        $('#time').prop('disabled', true);
+    } else {
+        $('#date').removeAttr('disabled');
+        $('#time').removeAttr('disabled');
+    }
+});
+
+$("#channel").on('change', function(event){
+    var channelList = document.getElementById("channel");
+    document.getElementById("message").value = channelList.options[channelList.selectedIndex].text + ': ';
+});

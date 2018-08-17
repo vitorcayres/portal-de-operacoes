@@ -123,3 +123,18 @@ function somenteNumeros(num) {
       campo.value = "";
     }
 }
+
+$(document).on("input", "#message", function() {
+    var limite = 160;
+    var informativo = "caracteres restantes";
+    var caracteresDigitados = $(this).val().length;
+    var caracteresRestantes = limite - caracteresDigitados;
+
+    if (caracteresRestantes <= 0) {
+        var comentario = $("textarea[name=message]").val();
+        $("textarea[name=message]").val(comentario.substr(0, limite));
+        $(".caracteres").text("0 " + informativo);
+    } else {
+        $(".caracteres").text(caracteresRestantes + " " + informativo);
+    }
+});

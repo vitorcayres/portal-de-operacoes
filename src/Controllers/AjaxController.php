@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use \Adbar\Session;
+use App\Libraries\DM;
 use App\Libraries\UserManagerPlatform;
 use App\Helpers\Helpers_Interactivity_Channels;
 use App\Helpers\Helpers_Interactivity_Partners;
@@ -36,5 +37,20 @@ class AjaxController
         if(!empty($parceiros)){
             return $response->withJson($parceiros, 200)->withHeader('Content-type', 'application/json');
         }
+    }
+    
+    public function shorturl(Request $request, Response $response, $args)
+    {
+
+        if ($request->isPost() === false) {
+            return false;
+        }
+    
+        $args = $request->getParams();
+        $url = $args['url'];
+
+        $response = DM::shortUrl($args['url']);
+        echo json_encode($response);
+        return true;
     }
 }
