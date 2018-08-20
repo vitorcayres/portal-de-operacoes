@@ -18,24 +18,38 @@
                     <h5>{{subtitulo}}</h5>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal" method="POST" action="{{ path_for('inserir-parceiro') }}">
+                        <form class="form-horizontal" method="POST" action="{{ path_for('inserir-luckynumber') }}">
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">Nome *:</label>
+                                <label class="col-sm-2 control-label" for="message">Tipo *:</label>
                                 <div class="col-sm-4">
-                                    <input type="text" class="form-control" name="name" required="true">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Tipo *:</label>
-                                <div class="col-sm-4">
-                                <select class="form-control" name="type" id="type" required="true">
-                                    <option selected="true" value="">Selecione um tipo...</option>
-                                        <option value="MEDIA">Mídia</option>
-                                        <option value="CONTENT">Conteúdo</option>
-                                        <option value="MEDIA_AND_CONTENT">Mídia/Conteúdo</option>
+                                    <select class="form-control select2" name="type" id="type" required="true">
+                                        <option selected="true" value="">[Selecione um tipo]</option>
+                                        {% for tipo in tipos %}
+                                            <option value="{{ tipo.name }}">{{ tipo.name }}</option>
+                                        {% endfor %}                                          
                                     </select>
                                 </div>
-                            </div> 
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="message">Cenário *:</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control select2" name="scenario" id="scenario" required="true">
+                                        <option selected="true" value="">[Selecione um cenário]</option>
+                                        {% for cenario in cenarios %}
+                                            <option value="{{ cenario.name }}">{{ cenario.name }}</option>
+                                        {% endfor %}                                         
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="message">Quantidade de números *:</label>
+                                <div class="col-sm-4">
+                                    <input class="form-control" type="quantity" name="quantity" onkeyup="somenteNumeros(this);" required="true">
+                                </div>
+                            </div>
+
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
                                 <div class="col-sm-4 col-sm-offset-2">
@@ -44,6 +58,7 @@
                                 </div>
                             </div>
                         </form>
+
                     </div>
                 </div>
             </div>

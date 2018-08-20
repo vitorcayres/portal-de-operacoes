@@ -169,3 +169,18 @@ $("#channel").on('change', function(event){
     var channelList = document.getElementById("channel");
     document.getElementById("message").value = channelList.options[channelList.selectedIndex].text + ': ';
 });
+
+$("#offerByChannels").change(function() {
+    var id = $(this).val();
+
+    $('#channelsByOffers').empty();
+    $('#channelsByOffers').append($('<option>').text("[Carregando...]"));
+
+    $.post(base_url + "/ajax/busca-canal", {"id": id}, function( data ) {
+          $('#channelsByOffers').empty();
+          $('#channelsByOffers').append($('<option>').text("[Selecione um canal]").attr('value', 0));
+        $.each(data, function(i, obj) {
+            $('#channelsByOffers').append($('<option>').text(obj.name).attr('value', obj.id));
+        });
+    });
+});

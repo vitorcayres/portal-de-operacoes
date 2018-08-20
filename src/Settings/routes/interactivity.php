@@ -41,6 +41,7 @@ $app->group('/interatividade', function () {
 	    $this->map(['GET', 'POST'], 	'/inserir', 		App\Controllers\Interactivity\NewsController::class .':inserir')->setName('inserir-noticia');
 	    $this->map(['GET', 'POST'], 	'/editar/{id}', 	App\Controllers\Interactivity\NewsController::class .':editar')->setName('editar-noticia');
 	    $this->map(['POST', 'DELETE'], 	'/remover/{id}', 	App\Controllers\Interactivity\NewsController::class .':remover')->setName('remover-noticia');
+	    $this->map(['GET', 'POST'], 	'/importar', 		App\Controllers\Interactivity\NewsController::class .':importar')->setName('importar-noticia');
 	});	
 
 	# Produtos

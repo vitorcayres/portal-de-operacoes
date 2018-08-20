@@ -42,7 +42,7 @@ class NewsController
     {
         // Todas as ofertas
         $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
-        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);    
+        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
 
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'endpoint'          => $this->_endpoint,
@@ -191,6 +191,59 @@ class NewsController
                 ->withHeader('Content-type', 'application/json');  
                 break;
         }     
+    }
+
+    public function importar(Request $request, Response $response, $args){
+
+        if($request->isPost())
+        {
+            $body = $request->getParsedBody();
+            $channelId = $body['channel'];
+
+            $tmp_filename = basename($_FILES["file"]["name"]);
+            $tmp_extensao = substr($tmp_filename, -3);
+            $new_filename = substr($tmp_filename, 0, -4) .'-'. microtime(true) .'.'. $tmp_extensao;
+
+            $target_file = INTERACTIVITY_APPLICATION_PATH . $new_filename;
+            $filedata = $_FILES['file']['tmp_name'];
+            $filesize = $_FILES['file']['size'];
+
+            $uploadOk = 1;
+            $fileType = pathinfo($target_file, PATHINFO_EXTENSION);
+
+            if (file_exists($target_file)) {
+                $this->container->flash->addMessage('error', 'O arquivo já existe. Tente novamente!');
+                $uploadOk = 0;
+            }
+
+            if ($filesize > 31457280) {
+                $this->container->flash->addMessage('error', 'Seu arquivo é muito grande, superior a 30MB. Tente novamente!');
+                $uploadOk = 0;
+            }     
+
+            if ($uploadOk == 1) {
+                if ($filedata != '') {
+                    if (move_uploaded_file($filedata, $target_file)) {
+
+                        $rows = UserManagerPlatform::UPLOAD($this->_hostname, $this->_token, '/news/channels/'. $channelId . '/', $target_file);
+
+                        switch ($rows->http_code) {
+                            case '201':
+                                $this->container->flash->addMessage('success', 'Arquivo importado com sucesso!');
+                                return $response->withStatus(200)->withHeader('Location', 'listar');
+                                break;
+                            
+                            default:
+                                $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
+                                return $response->withHeader('Location', 'inserir');                
+                                break;
+                        }
+                    } else {
+                        $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
+                    }
+                }
+            }
+        }
     }
 
     public function loadTable(Request $request, Response $response, $args)

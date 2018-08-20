@@ -34,7 +34,7 @@
                                             <tr>
                                                 <th style="width: 3%"></th> 
                                                 <th style="width: 13%;">
-                                                    <select class="form-control select2" name="offerId" id="offerId">
+                                                    <select class="form-control select2 offerId" name="offerId">
                                                         <option value="">[FILTRAR PELA OFERTA]</option>
                                                         {% for oferta in ofertas %}
                                                             <option value="{{ oferta.id }}">{{ oferta.name }}</option>
@@ -42,7 +42,7 @@
                                                     </select>
                                                 </th>
                                                 <th style="width: 15%;">
-                                                  <select class="form-control form-search" name="channelId" id="channelId" style="height: 29px; padding: 5px; font-size: 13px; color: #000; width: 210px;">
+                                                  <select class="form-control form-search channelId" name="channelId" style="height: 29px; padding: 5px; font-size: 13px; color: #000; width: 210px;">
                                                     <option value="">[FILTRAR PELO CANAL]</option>
                                                   </select>
                                                 </th>
@@ -93,11 +93,12 @@
                         <h4 class="modal-title">Importar Notícias</h4>
                     </div>
                     <div class="modal-body">
-                        <p>Para fazer o download do template do arquivo, <strong><a href="">clique aqui.</a></strong></p>
-                        <form action="http://interactivity2.whitelabel.com.br/interactivity-news/upload" enctype="multipart/form-data" method="POST">
+                        <p>Para fazer o download do template do arquivo, <strong><a href="{{ base_url() }}/assets/modelo.xls">clique aqui.</a></strong></p>
+                        <form action="{{ path_for('importar-noticia') }}" enctype="multipart/form-data" method="POST">
                             <div class="form-group">
                                 <label>Oferta *:</label> 
-                                <select class="form-control m-b" name="offer" id="offer" required="true">
+                                <select class="form-control" name="offer" id="offerByChannels" required="true">
+                                    <option value="">[Selecione uma oferta]</option>                                    
                                     {% for oferta in ofertas %}
                                         <option value="{{ oferta.id }}">{{ oferta.name }}</option>
                                     {% endfor %}
@@ -106,20 +107,20 @@
 
                             <div class="form-group">
                                 <label>Canal *:</label> 
-                                <select class="form-control" name="channel" id="channel">
-                                    <option value="">[Todas os Canais]</option>
+                                <select class="form-control" name="channel" id="channelsByOffers" required="true">
+                                    <option value="">[Todos os canais]</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Selecione o arquivo: *:</label> 
                                 <input class="form-control m-b" type="file" name="file" id="file" accept="application/vnd.ms-excel" required="true">
                             </div>      
-                        </form>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-white" type="reset">Limpar</button>
+                        <button class="btn btn-white" type="button" class="close" data-dismiss="modal">Cancelar</button>
                         <button class="btn btn-primary" type="submit">Salvar</button>
                     </div>
+                    </form>
                 </div>
             </div>
         </div>  

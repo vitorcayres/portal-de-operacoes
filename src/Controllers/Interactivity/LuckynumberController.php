@@ -7,6 +7,7 @@ use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
+use App\Helpers\Helpers_Interactivity_Luckynumber;
 
 class LuckynumberController
 {
@@ -52,9 +53,18 @@ class LuckynumberController
 
     public function inserir(Request $request, Response $response, $args)
     {
+        // Todos os tipos
+        $tipos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/raffle-types?limit=1000');
+        $tipos = Helpers_Interactivity_Luckynumber::getNameAndIdTypes($tipos);
+
+        // Todos os cenarios
+        $cenarios = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/types?limit=1000');
+        $cenarios = Helpers_Interactivity_Luckynumber::getNameAndIdTypes($cenarios);        
+
         if($request->isPost())
         {
             $body = $request->getParsedBody();
+
             $rows = UserManagerPlatform::POST($this->_hostname, $this->_token, '/'. $this->_endpoint, $body);
 
             switch ($rows->status) {
@@ -78,12 +88,22 @@ class LuckynumberController
             'subtitulo'     => 'Novo '. $this->_subtitulo,
             'sessao'        => $this->session,                             
             'hostname'      => $this->_hostname,
-            'token'         => $this->_token       
+            'token'         => $this->_token,
+            'tipos'         => $tipos,
+            'cenarios'      => $cenarios     
         ]);
     }
 
     public function editar(Request $request, Response $response, $args)
     {
+        // Todos os tipos
+        $tipos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/raffle-types?limit=1000');
+        $tipos = Helpers_Interactivity_Luckynumber::getNameAndIdTypes($tipos);
+
+        // Todos os cenarios
+        $cenarios = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/types?limit=1000');
+        $cenarios = Helpers_Interactivity_Luckynumber::getNameAndIdTypes($cenarios);       
+
         // Recuperando os dados pelo id
         $id = $args['id'];
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
@@ -116,7 +136,9 @@ class LuckynumberController
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
             'id'            => $args['id'],
-            'rows'          => $rows      
+            'rows'          => $rows,
+            'tipos'         => $tipos,
+            'cenarios'      => $cenarios                
         ]);        
     }
 
