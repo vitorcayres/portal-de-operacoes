@@ -1,0 +1,17 @@
+            <li {% if menu_sistema == 'configuracoes' %} class="active" style="background-color:#ffffff;" {% endif %}>
+                <a href="#" {% if menu_sistema == 'configuracoes' %} class="active" style="background-color:#2DBCB5; color:#FFFFFF;" {% endif %}><i class="fa fa-cog"></i><span class="nav-label">Configurações</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level collapse" style="height: 0px;">
+                    <li {% if pagina == 'empresas' %}class="active"{% endif %}>
+                        <a href="{{ base_url() }}/configuracoes/empresas/listar"><i class="fa fa-home"></i><span class="nav-label">Empresas</span></a>
+                    </li>
+                    <li {% if pagina == 'usuarios' %}class="active"{% endif %}>
+                        <a href="{{ base_url() }}/configuracoes/usuarios/listar"><i class="fa fa-users"></i><span class="nav-label">Usuários</span></a>
+                    </li>
+                    <li {% if pagina == 'perfil' %}class="active"{% endif %}>
+                        <a href="{{ base_url() }}/configuracoes/perfil/listar"><i class="fa fa-briefcase"></i> <span class="nav-label">Perfis</span></a>
+                    </li>
+                    <li {% if pagina == 'permissoes' %}class="active"{% endif %}>
+                        <a href="{{ base_url() }}/configuracoes/permissoes/listar"><i class="fa fa-lock"></i> <span class="nav-label">Permissões</span></a>
+                    </li>
+                </ul>
+            </li>

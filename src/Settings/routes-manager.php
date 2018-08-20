@@ -6,12 +6,8 @@
 # Dashboard
 $app->get('/dashboard', App\Controllers\DashboardController::class)->setName('dashboard')->add(App\Middleware\Safety::class);
 
-# Ajax
-$app->group('/ajax', function () {
-	$this->map(['POST'], '/busca-canal',	App\Controllers\AjaxController::class .':getChannelsById');
-	$this->map(['POST'], '/busca-parceiro',	App\Controllers\AjaxController::class .':getPartnersById');
-	$this->map(['POST'], '/encurta-url',	App\Controllers\AjaxController::class .':shortUrl');		
-});
+# Rota: AJAX
+require __DIR__ . '../routes/ajax.php';
 
 # Rota: Autenticação do Usuário
 require __DIR__ . '../routes/login.php';
@@ -21,3 +17,6 @@ require __DIR__ . '../routes/configurations.php';
 
 # Rota: Interatividade
 require __DIR__ . '../routes/interactivity.php';
+
+# Rota: Interatividade
+require __DIR__ . '../routes/campaign.php';
