@@ -36,7 +36,7 @@
                                             </th>
                                             <th style="width: 30%;">
                                                 <select class="form-control select2 form-search" name="offerId" id="offerId">
-                                                    <option value="">[FILTRAR PELA OFERTA]</option>
+                                                    <option value="">[FILTRAR PELA CHAVE]</option>
                                                     {% for oferta in ofertas %}
                                                         <option value="{{ oferta.id }}">{{ oferta.name }}</option>
                                                     {% endfor %}
@@ -44,13 +44,11 @@
                                             </th>
                                             <th style="width: 15%;">
                                                 <select class="form-control select2 form-search" name="messagesPerDay" id="messagesPerDay">
-                                                    <option value="">[FILTRAR PELA QUANTIDADE]</option>
+                                                    <option value="">[FILTRAR PELO STATUS]</option>
                                                     {% for i in 0..100 %}
                                                         <option value="{{ i }}">{{ i }}</option>
                                                     {% endfor %}
                                                 </select>
-                                            </th>
-                                            <th style="width: 5%;">                                       
                                             </th>
                                            <th style="width: 3%;"></th>                                  
                                         </tr>                                    
@@ -59,9 +57,8 @@
                                       <tr>
                                         <th style="width: 50px;">#</th>
                                         <th>NOME</th>
-                                        <th>OFERTA</th>
-                                        <th>MENSAGENS POR DIA</th>
-                                        <th>STATUS</th>                                                                        
+                                        <th>AUTH KEY</th>
+                                        <th>HABILITADO</th>                                                                        
                                         <th style="width: 50px;">AÇÕES</th>                                    
                                       </tr>
                                     </thead>

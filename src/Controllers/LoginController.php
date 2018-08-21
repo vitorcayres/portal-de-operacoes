@@ -31,6 +31,10 @@ class LoginController
                     # Gerando token de autorização
                     $auth = JWT::decode($rows->token, GDU_SECRET_KEY, array('HS256'));        
 
+                    $permissions = UserManagerPlatform::GET($this->_hostname, $rows->token, '/usergroup_has_permission?id='. $auth->data->usergroup_id .'&limit=1000');
+
+                    $auth->data->permissions = $permissions->data;
+
                     # Criando sessão do usuário
                     $this->session->set(array(
                         'id'                    => $auth->data->id,

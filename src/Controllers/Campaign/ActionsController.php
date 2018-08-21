@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controllers\Configurations;
+namespace App\Controllers\Campaign;
 
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -8,36 +8,36 @@ use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
 
-class PermissionsController
+class ActionsController
 {
-    private $_hostname = GDU_HOSTNAME;
-
     public function __construct($container){
         $this->container = $container;
         $this->session = new \Adbar\Session;
         
         # Parametros de Texto
-        $this->_sistema     = 'configuracoes';
-        $this->_subtitulo   = 'Permissões';        
-        $this->_titulo      = 'Configurações :: ' . $this->_subtitulo;
-        $this->_pagina      = 'permissoes';
-        $this->_endpoint    = 'permissions';
-        $this->_template    = '/interface/configuracoes/permissoes';
+        $this->_sistema     = 'campanhas';
+        $this->_titulo      = 'Campanhas :: Ações';
+        $this->_subtitulo   = 'Ações';
+        $this->_pagina      = 'acoes';
+        $this->_template    = '/interface/campanhas/acoes';
 
-        # Token do usuário
-        $this->_token = $this->session->get('token');
+        # Variaveis de ambiente
+        $this->_hostname    = '';
+        $this->_token       = '';
+        $this->_endpoint    = '';
 
         # Permissões 
-        $this->_permissions = [
-            'listar'    => 'listar-permissao',
-            'inserir'   => 'inserir-permissao',
-            'editar'    => 'editar-permissao',
-            'remover'   => 'remover-permissao'
-        ];        
+        $this->_permissoes = [
+            'listar'    => 'listar-acao',
+            'inserir'   => 'inserir-acao',
+            'editar'    => 'editar-acao',
+            'remover'   => 'remover-acao'
+        ];
     }    
 
     public function listar(Request $request, Response $response, $args)
     {
+
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'endpoint'          => $this->_endpoint,
             'pagina'            => $this->_pagina,
@@ -47,25 +47,26 @@ class PermissionsController
             'sessao'            => $this->session,            
             'hostname'          => $this->_hostname,
             'token'             => $this->_token,
-            'permissoes'        => $this->_permissions            
+            'permissoes'        => $this->_permissoes
         ]);
     }
 
     public function inserir(Request $request, Response $response, $args)
     {
+
         if($request->isPost())
-        {
-            $body = $request->getParsedBody();
+        {      
+
             $rows = UserManagerPlatform::POST($this->_hostname, $this->_token, '/'. $this->_endpoint, $body);
 
-            switch ($rows->status) {
-                case 'success':
-                    $this->container->flash->addMessage('success', $rows->message);
+            switch ($rows->http_code) {
+                case '201':
+                    $$this->container->flash->addMessage('success', 'Registro inserido com sucesso!');
                     return $response->withStatus(200)->withHeader('Location', 'listar');
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
                     return $response->withHeader('Location', 'inserir');                
                     break;
             }
@@ -76,11 +77,10 @@ class PermissionsController
             'pagina'        => $this->_pagina,
             'menu_sistema'  => $this->_sistema,
             'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Nova '. $this->_subtitulo,
+            'subtitulo'     => 'Novo '. $this->_subtitulo,
             'sessao'        => $this->session,                             
             'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'sistemas'      => GDU_SYSTEMS
+            'token'         => $this->_token               
         ]);
     }
 
@@ -91,18 +91,18 @@ class PermissionsController
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
 
         if($request->isPost())
-        {
-            $body = $request->getParsedBody();
+        {    
+
             $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/'. $this->_endpoint .'/'. $id, $body);
 
-            switch ($rows->status) {
-                case 'success':
-                    $this->container->flash->addMessage('success', $rows->message);
+            switch ($rows->http_code) {
+                case '200':
+                    $$this->container->flash->addMessage('success', 'Registro alterado com sucesso!');
                     return $response->withStatus(200)->withHeader('Location', '../listar');
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
                     return $response->withHeader('Location', '../editar/'. $id);
                     break;
             }
@@ -118,9 +118,8 @@ class PermissionsController
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
             'id'            => $args['id'],
-            'rows'          => $rows->data,
-            'menu_sistema'  => 'configuracoes',
-            'sistemas'      => GDU_SYSTEMS                
+            'rows'          => $rows,
+            'ofertas'       => $ofertas   
         ]);        
     }
 
@@ -131,8 +130,8 @@ class PermissionsController
 
         $rows = UserManagerPlatform::DELETE($this->_hostname, $this->_token, '/'. $this->_endpoint .'/', $id);
 
-        switch ($rows->status) {
-            case 'success':
+        switch ($rows->http_code) {
+            case '204':
                 return $response->withJson($rows, 200)
                 ->withHeader('Content-type', 'application/json');  
                 break;
@@ -152,21 +151,42 @@ class PermissionsController
         $length = ($request['length'] == 0)? 1 : $request['length'];
         $page = (int)($start / $request['length']) + 1;
 
-        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint .'?page='. $page . '&limit='. $length);
+        if($page)
+            $parameters = "?page=". $page ."&limit=". $length;
+
+        $more = [];
+
+        $more = array(
+            'name'            => (!empty($request['name']))? $request['name'] : '',
+            'offerId'         => (!empty($request['offerId']))? $request['offerId'] : '',
+            'messagesPerDay'  => (!empty($request['messagesPerDay']))? $request['messagesPerDay'] : ''                                    
+        );
+
+        if($more){
+            if(!is_array($more)){ return false; }
+            foreach ($more as $k => $v) {
+                if(!empty($v)){
+                    $parameters .= "&". $k ."=". $v;
+                }
+            }
+        }
+
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . $parameters);
         $data = [];
 
         foreach ($rows->data as $v) {
             $arr   = [];
             $arr[] = $v->id;
             $arr[] = $v->name;
-            $arr[] = $v->system;
-            $arr[] = $v->uri;            
+            $arr[] = Helpers_Interactivity_Channels::offerById($v->offer->id);
+            $arr[] = $v->messagesPerDay;
+            $arr[] = Helpers_Interactivity_Channels::statusOffers($v->active);                                                               
 
-            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissoes['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
-            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissoes['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
 
-            $arr[] = $editar . $remover;
+            $arr[]  = $editar . $remover;
             $data[] = $arr;
         }
 

@@ -56,6 +56,16 @@ class UsergroupController
         # Permissões
         $permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/permissions?limit=1000');
 
+        $perms = $permissoes->data;
+
+        foreach ($perms as $key => $data) {
+            $arr[$data->system][$data->uri] = $data;
+        }
+
+        echo "<pre>";
+        print_r($arr);
+        die();
+
         if($request->isPost())
         {
             $body = $request->getParsedBody();
