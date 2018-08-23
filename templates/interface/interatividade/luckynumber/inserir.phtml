@@ -20,7 +20,7 @@
                     <div class="ibox-content">
                         <form class="form-horizontal" method="POST" action="{{ path_for('inserir-luckynumber') }}">
                             <div class="form-group">
-                                <label class="col-sm-2 control-label" for="message">Tipo *:</label>
+                                <label class="col-sm-2 control-label" for="message">Tipo</label>
                                 <div class="col-sm-4">
                                     <select class="form-control select2" name="type" id="type" required="true">
                                         <option selected="true" value="">[Selecione um tipo]</option>
@@ -32,7 +32,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-2 control-label" for="message">Cenário *:</label>
+                                <label class="col-sm-2 control-label" for="message">Cenário</label>
                                 <div class="col-sm-4">
                                     <select class="form-control select2" name="scenario" id="scenario" required="true">
                                         <option selected="true" value="">[Selecione um cenário]</option>
@@ -44,7 +44,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-2 control-label" for="message">Quantidade de números *:</label>
+                                <label class="col-sm-2 control-label" for="message">Quantidade de números</label>
                                 <div class="col-sm-4">
                                     <input class="form-control" type="quantity" name="quantity" onkeyup="somenteNumeros(this);" required="true">
                                 </div>

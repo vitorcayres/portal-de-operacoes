@@ -18,8 +18,8 @@ class PermissionsController
         
         # Parametros de Texto
         $this->_sistema     = 'configuracoes';
-        $this->_subtitulo   = 'Permissões';        
-        $this->_titulo      = 'Configurações :: ' . $this->_subtitulo;
+        $this->_subtitulo   = 'Permissão';        
+        $this->_titulo      = 'Configurações :: Permissões';
         $this->_pagina      = 'permissoes';
         $this->_endpoint    = 'permissions';
         $this->_template    = '/interface/configuracoes/permissoes';
