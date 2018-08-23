@@ -42,6 +42,27 @@ class Helpers_Interactivity_Phraseologies
 	}
 
 	/** 
+	* Função: Tratativa para retornar somente o id e o nome dos tipos
+	* Pagina: fraseologias
+	*/
+	public function getNameAndIdTypes($params) {
+
+		unset($params->http_code);
+			
+        $data = [];
+        foreach ($params as $k => $v) {    
+            $arr = array(
+                'id' => $k,
+                'name' => $v->type,
+                'brief_description' => $v->brief_description
+            );
+
+            $data[] = $arr;
+        }
+        return $data;
+	}	
+
+	/** 
 	* Função: Tratativa para retornar o badge referente a operadora
 	* Pagina: fraseologias
 	*/

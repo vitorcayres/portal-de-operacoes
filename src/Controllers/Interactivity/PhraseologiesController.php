@@ -8,6 +8,9 @@ use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
 use App\Helpers\Helpers_Interactivity_Phraseologies;
+use App\Helpers\Helpers_Interactivity_Luckynumber;
+
+
 
 class PhraseologiesController
 {
@@ -59,6 +62,7 @@ class PhraseologiesController
 
         // Tipos de fraseologias
         $tipos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies/all-types');
+        $tipos = Helpers_Interactivity_Phraseologies::getNameAndIdTypes($tipos);        
 
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'endpoint'          => $this->_endpoint,

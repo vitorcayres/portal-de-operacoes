@@ -37,17 +37,17 @@ $("#login").click(function() {
 * Função: Recupera o canal equivalente pelo id da oferta
 * Pagina: noticias
 */
-$("#offerId").change(function() {
+$(".offerId").change(function() {
     var id = $(this).val();
 
-    $('#channelId').empty();
-    $('#channelId').append($('<option>').text("[CARREGANDO...]"));
+    $('.channelId').empty();
+    $('.channelId').append($('<option>').text("[CARREGANDO...]"));
 
     $.post(base_url + "/ajax/busca-canal", {"id": id}, function( data ) {
-          $('#channelId').empty();
-          $('#channelId').append($('<option>').text("[FILTRAR PELO CANAL]").attr('value', 0));
+          $('.channelId').empty();
+          $('.channelId').append($('<option>').text("[FILTRAR PELO CANAL]").attr('value', 0));
         $.each(data, function(i, obj) {
-            $('#channelId').append($('<option>').text(obj.name).attr('value', obj.id));
+            $('.channelId').append($('<option>').text(obj.name).attr('value', obj.id));
         });
     });
 });

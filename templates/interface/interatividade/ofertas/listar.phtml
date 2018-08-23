@@ -20,58 +20,57 @@
                             {{item}}
                         </div>
                         {% endfor %}
-                        <div class="table-responsive" style="overflow: hidden;">
-                            <form id="filterRows">                            
-                                <table id="{{ pagina }}" class="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 3%"></th> 
-                                            <th style="width: 30%;">
-                                                <select class="form-control select2 form-search" name="name" id="name">
-                                                    <option value="">[FILTRAR PELO NOME]</option>
-                                                    {% for oferta in ofertas %}
-                                                        <option value="{{ oferta.name }}">{{ oferta.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </th>
-                                            <th style="width: 30%;">
-                                                <select class="form-control select2 form-search" name="description" id="description">
-                                                    <option value="">[FILTRAR PELA DESCRIÇÃO]</option>
-                                                    {% for oferta in ofertas %}
-                                                        <option value="{{ oferta.description }}">{{ oferta.description }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </th>
-                                            <th style="width: 15%;">
-                                                <select class="form-control select2 form-search" name="partnerId" id="partnerId">
-                                                    <option value="">[FILTRAR PELO PARCEIRO]</option>
-                                                    {% for parceiro in parceiros %}
-                                                        <option value="{{ parceiro.id }}">{{ parceiro.name }}</option>
-                                                    {% endfor %}
-                                                </select>
-                                            </th>
-                                            <th style="width: 15%;">
-                                                <select class="form-control select2 form-search" name="public" id="public">
-                                                    <option value="">[FILTRAR PELA VISIBILIDADE]</option>
-                                                    <option value="1">Público</option>
-                                                    <option value="0">Privado</option>
-                                                </select>                                          
-                                            </th>
-                                           <th style="width: 3%;"></th>                                  
-                                        </tr>                                    
-                                    </thead>
-                                    <thead>
-                                      <tr>
-                                        <th>#</th>
-                                        <th>NOME</th>
-                                        <th>DESCRIÇÃO</th>
-                                        <th>PARCEIRO</th>
-                                        <th>VISIBILIDADE</th>                                                                        
-                                        <th>AÇÕES</th>                                    
-                                      </tr>
-                                    </thead>
-                                </table>
-                            </form>
+
+                        <form role="form" class="form-inline" id="filterRows">
+                            <div class="form-group">
+                                <strong>Filtros:</strong> &nbsp;
+                                <select class="form-control select2 form-search" name="name" id="name">
+                                    <option value="">[FILTRAR PELO NOME]</option>
+                                    {% for oferta in ofertas %}
+                                        <option value="{{ oferta.name }}">{{ oferta.name }}</option>
+                                    {% endfor %}
+                                </select>                                
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control select2 form-search" name="description" id="description">
+                                    <option value="">[FILTRAR PELA DESCRIÇÃO]</option>
+                                    {% for oferta in ofertas %}
+                                        <option value="{{ oferta.description }}">{{ oferta.description }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control select2 form-search" name="partnerId" id="partnerId">
+                                    <option value="">[FILTRAR PELO PARCEIRO]</option>
+                                    {% for parceiro in parceiros %}
+                                    <option value="{{ parceiro.id }}">{{ parceiro.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control select2 form-search" name="public" id="public">
+                                    <option value="">[FILTRAR PELA VISIBILIDADE]</option>
+                                    <option value="1">Público</option>
+                                    <option value="0">Privado</option>
+                                </select>
+                            </div>
+                        </form>
+
+                        <div class="hr-line-dashed"></div>
+
+                        <div class="table-responsive">                       
+                            <table id="{{ pagina }}" class="table table-striped table-bordered table-hover">
+                                <thead>
+                                  <tr>
+                                    <th>#</th>
+                                    <th>NOME</th>
+                                    <th>DESCRIÇÃO</th>
+                                    <th>PARCEIRO</th>
+                                    <th>VISIBILIDADE</th>                                                                        
+                                    <th>AÇÕES</th>                                    
+                                  </tr>
+                                </thead>
+                            </table>
                         </div>
                     </div>
                 </div>
