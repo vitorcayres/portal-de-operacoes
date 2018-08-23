@@ -56,15 +56,9 @@ class UsergroupController
         # Permissões
         $permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/permissions?limit=1000');
 
-        $perms = $permissoes->data;
-
-        foreach ($perms as $key => $data) {
-            $arr[$data->system][$data->uri] = $data;
+        foreach ($permissoes->data as $key => $data) {
+            $perms[$data->system][$data->uri][$key] = ['id' => $data->id, 'name' => $data->name];
         }
-
-        echo "<pre>";
-        print_r($arr);
-        die();
 
         if($request->isPost())
         {
@@ -93,7 +87,7 @@ class UsergroupController
             'sessao'        => $this->session,                                
             'hostname'      => $this->_hostname,
             'token'         => $this->_token,
-            'permissoes'    => $permissoes->data       
+            'permissoes'    => $perms      
         ]);
     }
 
@@ -109,6 +103,10 @@ class UsergroupController
 
         # Permissões
         $permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/permissions?limit=1000');
+
+        foreach ($permissoes->data as $key => $data) {
+            $perms[$data->system][$data->uri][$key] = ['id' => $data->id, 'name' => $data->name];
+        }
 
         if($request->isPost())
         {
@@ -139,7 +137,7 @@ class UsergroupController
             'token'         => $this->_token,
             'id'            => $args['id'],
             'rows'          => $rows->data,
-            'permissoes'    => $permissoes->data,
+            'permissoes'    => $perms,
             'gp_permissoes' => $gp_permissoes->data
         ]);        
     }
