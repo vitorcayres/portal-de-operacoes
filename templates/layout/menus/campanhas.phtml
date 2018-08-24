@@ -1,20 +1,26 @@
-            <li{% if menu_sistema == 'campanhas' %} class="active" style="background-color:#ffffff;" {% endif %}>
-                <a href="#" {% if menu_sistema == 'campanhas' %} class="active" style="background-color:#2DBCB5; color:#FFFFFF;" {% endif %}><i class="fa fa-newspaper-o"></i><span class="nav-label">Campanhas</span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level collapse">
-                    <li {% if pagina == 'consumers' %}class="active"{% endif %}>
-                        <a href="{{ base_url() }}/campanhas/consumers/listar"><i class="fa fa-bullseye"></i><span class="nav-label">Consumers</span></a>
-                    </li>
-                    <li {% if pagina == 'acoes' %}class="active"{% endif %}>
-                        <a href="{{ base_url() }}/campanhas/acoes/listar"><i class="fa fa-send"></i><span class="nav-label">Ações</span></a>
-                    </li>
-                    <li {% if pagina == 'canais' %}class="active"{% endif %}>
-                        <a href="{{ base_url() }}/campanhas/canais/listar"><i class="fa fa-list-ol"></i><span class="nav-label">Canais</span></a>
-                    </li>
-                    <li {% if pagina == 'operadoras' %}class="active"{% endif %}>
-                        <a href="{{ base_url() }}/campanhas/operadoras/listar"><i class="fa fa-phone"></i><span class="nav-label">Operadoras</span></a>
-                    </li>
-                    <li {% if pagina == 'la' %}class="active"{% endif %}>
-                        <a href="{{ base_url() }}/campanhas/la/listar"><i class="fa fa-sort-numeric-asc"></i><span class="nav-label">LA</span></a>
-                    </li>
-                </ul>
-            </li>            
+{% for perms in sessao.permissions %}
+    {% if perms.name == permissoes.interface %}
+
+        <li {{(menu_sistema == 'campanhas') ? 'class=active style=background-color:#fff;' : ''}}>
+            <a href="#" {{(menu_sistema == 'campanhas') ? 'class=active style=background-color:#2DBCB5;color:#fff;' : ''}}>
+                <i class="fa fa-newspaper-o"></i>
+                <span class="nav-label">Campanhas</span><span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-second-level collapse">
+                <li {{ menu_consumers }}>
+                    <a href="{{ path_for('listar-consumer') }}">
+                        <i class="fa fa-bullseye"></i>
+                        <span class="nav-label">Consumers</span>
+                    </a>
+                </li>
+                <li {{ menu_acoes }}>
+                    <a href="{{ path_for('listar-acao') }}">
+                        <i class="fa fa-send"></i>
+                        <span class="nav-label">Ações</span>
+                    </a>
+                </li>                                 
+            </ul>
+        </li>
+
+    {% endif %}
+{% endfor %}

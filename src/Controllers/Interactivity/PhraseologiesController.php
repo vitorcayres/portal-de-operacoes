@@ -21,7 +21,7 @@ class PhraseologiesController
         # Parametros de Texto
         $this->_sistema     = 'interatividade';
         $this->_titulo      = 'Interatividade :: Fraseologias';
-        $this->_subtitulo   = 'Fraseologias';
+        $this->_subtitulo   = 'Fraseologia';
         $this->_pagina      = 'fraseologias';
         $this->_template    = '/interface/interatividade/fraseologias';
 
@@ -85,7 +85,19 @@ class PhraseologiesController
     }
 
     public function inserir(Request $request, Response $response, $args)
-    {
+    { 
+        // Todas as campanhas
+        $campanhas = UserManagerPlatform::GET($this->_hostname_campaign, $this->_token_campaign, '/'. $this->_endpoint_campaign);
+        $campanhas = Helpers_Interactivity_Phraseologies::getNameAndIdCampaign($campanhas);
+
+        // Todos os produtos
+        $produtos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/products?limit=10000');
+        $produtos = Helpers_Interactivity_Phraseologies::getNameAndIdProducts($produtos);
+
+        // Tipos de fraseologias
+        $tipos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies/all-types');
+        $tipos = Helpers_Interactivity_Phraseologies::getNameAndIdTypes($tipos);   
+
         if($request->isPost())
         {
             $body = $request->getParsedBody();
@@ -114,7 +126,12 @@ class PhraseologiesController
             'titulo'                    => $this->_titulo,
             'subtitulo'                 => 'Nova ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
-            'menu_'.$this->_pagina      => 'class=active'    
+            'menu_'.$this->_pagina      => 'class=active',
+            'campanhas'                 => $campanhas,
+            'produtos'                  => $produtos,
+            'la'                        => $this->_la,
+            'tipos'                     => $tipos,
+            'operadoras'                => $this->_operadora               
         ]);
     }
 

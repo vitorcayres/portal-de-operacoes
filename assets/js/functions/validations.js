@@ -138,3 +138,7 @@ $(document).on("input", "#message", function() {
         $(".caracteres").text(caracteresRestantes + " " + informativo);
     }
 });
+
+$( "#message" ).keyup(function() {
+    $('#valeu').empty().val($(this).val());
+});

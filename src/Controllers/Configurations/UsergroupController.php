@@ -28,7 +28,7 @@ class UsergroupController
         $this->_token = $this->session->get('token');
 
         # Permissões 
-        $this->_permissions = [
+        $this->_permissoes = [
             'interface' => 'configuracoes',            
             'listar'    => 'listar-perfil',
             'inserir'   => 'inserir-perfil',
@@ -44,7 +44,7 @@ class UsergroupController
             'token'                     => $this->_token,
             'endpoint'                  => $this->_endpoint,
             'sessao'                    => $this->session,
-            'permissoes'                => $this->_permissions,
+            'permissoes'                => $this->_permissoes,
             'pagina'                    => $this->_pagina,
             'titulo'                    => $this->_titulo,
             'subtitulo'                 => 'Listar ' . $this->_subtitulo,
@@ -85,13 +85,13 @@ class UsergroupController
             'token'                     => $this->_token,
             'endpoint'                  => $this->_endpoint,
             'sessao'                    => $this->session,
-            'permissoes'                => $this->_permissions,
+            'permissoes'                => $this->_permissoes,
             'pagina'                    => $this->_pagina,
             'titulo'                    => $this->_titulo,
             'subtitulo'                 => 'Novo ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,    
             'menu_perfil'               => 'class=active', 
-            'permissoes'                => $perms      
+            'perms'                     => $perms      
         ]);
     }
 
@@ -135,7 +135,7 @@ class UsergroupController
             'token'                     => $this->_token,
             'endpoint'                  => $this->_endpoint,
             'sessao'                    => $this->session,
-            'permissoes'                => $this->_permissions,
+            'permissoes'                => $this->_permissoes,
             'pagina'                    => $this->_pagina,
             'titulo'                    => $this->_titulo,
             'subtitulo'                 => 'Editar ' . $this->_subtitulo,
@@ -143,7 +143,7 @@ class UsergroupController
             'menu_perfil'               => 'class=active', 
             'id'                        => $args['id'],
             'rows'                      => $rows->data,
-            'permissoes'                => $perms,
+            'perms'                     => $perms,
             'gp_permissoes'             => $gp_permissoes->data
         ]);        
     }
@@ -185,9 +185,9 @@ class UsergroupController
             $arr[] = $v->name;
             $arr[] = $v->description;
 
-            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissoes['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
-            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissoes['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
 
             $arr[] = $editar . $remover;
             $data[] = $arr;
