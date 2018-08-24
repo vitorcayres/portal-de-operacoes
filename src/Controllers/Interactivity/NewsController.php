@@ -29,7 +29,8 @@ class NewsController
         $this->_endpoint    = 'news';
 
         # Permissões 
-        $this->_permissions = [
+        $this->_permissoes = [
+            'interface' => 'interatividade',            
             'listar'    => 'listar-noticia',
             'inserir'   => 'inserir-noticia',
             'editar'    => 'editar-noticia',
@@ -45,16 +46,17 @@ class NewsController
         $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
 
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
-            'endpoint'          => $this->_endpoint,
-            'pagina'            => $this->_pagina,
-            'menu_sistema'      => $this->_sistema,
-            'titulo'            => $this->_titulo,
-            'subtitulo'         => 'Listar ' . $this->_subtitulo,
-            'sessao'            => $this->session,            
-            'hostname'          => $this->_hostname,
-            'token'             => $this->_token,
-            'permissoes'        => $this->_permissions,
-            'ofertas'           => $ofertas            
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissoes,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Listar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
+            'ofertas'                   => $ofertas            
         ]);
     }
 
@@ -92,15 +94,17 @@ class NewsController
         }
 
         return $this->container->view->render($response, $this->_template . '/inserir.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Novo '. $this->_subtitulo,
-            'sessao'        => $this->session,                             
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'ofertas'       => $ofertas      
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissoes,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Nova ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
+            'ofertas'                   => $ofertas      
         ]);
     }
 
@@ -159,17 +163,19 @@ class NewsController
         }
 
         return $this->container->view->render($response, $this->_template . '/editar.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Editar '. $this->_subtitulo,
-            'sessao'        => $this->session,                    
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'id'            => $args['id'],
-            'rows'          => $rows,
-            'ofertas'       => $ofertas   
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissoes,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Editar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
+            'id'                        => $args['id'],
+            'rows'                      => $rows,
+            'ofertas'                   => $ofertas   
         ]);        
     }
 
@@ -288,9 +294,9 @@ class NewsController
             $arr[] = date('d/m/Y H:i:s', strtotime($v->createdAt));
             $arr[] = date('d/m/Y H:i:s', strtotime($v->updatedAt));
 
-            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissoes['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
-            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissoes['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
 
             $arr[]  = $editar . $remover;
             $data[] = $arr;

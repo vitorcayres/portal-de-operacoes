@@ -37,12 +37,12 @@
                                         <div class="tabs-container">
                                             <ul class="nav nav-tabs">
                                                 {% for sistema, permissao in permissoes %}
-                                                    <li {% if sistema == 'configuracoes' %} class="active" {% endif %}><a data-toggle="tab" href="#tab-{{sistema}}"> <i class="fa fa-laptop"></i>{{ sistema }}</a></li>
+                                                    <li {% if sistema == 'dashboard' %} class="active" {% endif %}><a data-toggle="tab" href="#tab-{{sistema}}"> <i class="fa fa-laptop"></i>{{ sistema }}</a></li>
                                                 {% endfor %}
                                             </ul>
                                             <div class="tab-content">
                                             {% for sistema, permissao in permissoes %}
-                                                <div id="tab-{{sistema}}" class="tab-pane {% if sistema == 'configuracoes' %} active{% endif %}">
+                                                <div id="tab-{{sistema}}" class="tab-pane {% if sistema == 'dashboard' %} active{% endif %}">
                                                     <div class="panel-body">
                                                         {% for perms, listagem in permissao %}
                                                         <div class="form-group">

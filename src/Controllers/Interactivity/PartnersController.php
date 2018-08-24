@@ -28,7 +28,8 @@ class PartnersController
         $this->_endpoint    = 'partners';
 
         # Permissões 
-        $this->_permissions = [
+        $this->_permissoes = [
+            'interface' => 'interatividade',            
             'listar'    => 'listar-parceiro',
             'inserir'   => 'inserir-parceiro',
             'editar'    => 'editar-parceiro',
@@ -39,15 +40,16 @@ class PartnersController
     public function listar(Request $request, Response $response, $args)
     {
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
-            'endpoint'          => $this->_endpoint,
-            'pagina'            => $this->_pagina,
-            'menu_sistema'      => $this->_sistema,
-            'titulo'            => $this->_titulo,
-            'subtitulo'         => 'Listar ' . $this->_subtitulo,
-            'sessao'            => $this->session,            
-            'hostname'          => $this->_hostname,
-            'token'             => $this->_token,
-            'permissoes'        => $this->_permissions            
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissoes,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Listar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
         ]);
     }
 
@@ -72,14 +74,17 @@ class PartnersController
         }
 
         return $this->container->view->render($response, $this->_template . '/inserir.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Novo '. $this->_subtitulo,
-            'sessao'        => $this->session,                             
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token       
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissoes,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Novo ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
+
         ]);
     }
 
@@ -108,16 +113,18 @@ class PartnersController
         }
 
         return $this->container->view->render($response, $this->_template . '/editar.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Editar '. $this->_subtitulo,
-            'sessao'        => $this->session,                    
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'id'            => $args['id'],
-            'rows'          => $rows      
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissoes,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Editar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
+            'id'                        => $args['id'],
+            'rows'                      => $rows
         ]);        
     }
 
@@ -176,9 +183,9 @@ class PartnersController
             $arr[] = $v->name;
             $arr[] = Helpers_Interactivity_Partners::partnerTypeView($v->type);
 
-            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissoes['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
-            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissoes['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
 
             $arr[]  = $editar . $remover;
             $data[] = $arr;

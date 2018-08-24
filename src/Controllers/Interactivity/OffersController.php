@@ -29,6 +29,7 @@ class OffersController
 
         # Permissões 
         $this->_permissions = [
+            'interface' => 'interatividade',
             'listar'    => 'listar-oferta',
             'inserir'   => 'inserir-oferta',
             'editar'    => 'editar-oferta',
@@ -48,17 +49,18 @@ class OffersController
         $parceiros = Helpers_Interactivity_Offers::getNameAndIdPartners($parceiros);      
 
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
-            'endpoint'          => $this->_endpoint,
-            'pagina'            => $this->_pagina,
-            'menu_sistema'      => $this->_sistema,
-            'titulo'            => $this->_titulo,
-            'subtitulo'         => 'Listar ' . $this->_subtitulo,
-            'sessao'            => $this->session,            
-            'hostname'          => $this->_hostname,
-            'token'             => $this->_token,
-            'permissoes'        => $this->_permissions,
-            'parceiros'         => $parceiros,
-            'ofertas'           => $ofertas        
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissions,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Listar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
+            'parceiros'                 => $parceiros,
+            'ofertas'                   => $ofertas        
         ]);
     }
 
@@ -89,15 +91,17 @@ class OffersController
         }
 
         return $this->container->view->render($response, $this->_template . '/inserir.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Nova '. $this->_subtitulo,
-            'sessao'        => $this->session,                             
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'parceiros'     => $parceiros               
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissions,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Nova ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
+            'parceiros'                 => $parceiros               
         ]);
     }
 
@@ -132,17 +136,19 @@ class OffersController
         }
 
         return $this->container->view->render($response, $this->_template . '/editar.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Editar '. $this->_subtitulo,
-            'sessao'        => $this->session,                    
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'id'            => $args['id'],
-            'rows'          => $rows,
-            'parceiros'     => $parceiros             
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissions,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Editar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
+            'id'                        => $args['id'],
+            'rows'                      => $rows,
+            'parceiros'                 => $parceiros             
         ]);        
     }
 

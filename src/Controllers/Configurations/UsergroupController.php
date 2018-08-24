@@ -29,6 +29,7 @@ class UsergroupController
 
         # Permissões 
         $this->_permissions = [
+            'interface' => 'configuracoes',            
             'listar'    => 'listar-perfil',
             'inserir'   => 'inserir-perfil',
             'editar'    => 'editar-perfil',
@@ -39,22 +40,23 @@ class UsergroupController
     public function listar(Request $request, Response $response, $args)
     {
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
-            'endpoint'          => $this->_endpoint,
-            'pagina'            => $this->_pagina,
-            'menu_sistema'      => $this->_sistema,
-            'titulo'            => $this->_titulo,
-            'subtitulo'         => 'Listar ' . $this->_subtitulo,
-            'sessao'            => $this->session,            
-            'hostname'          => $this->_hostname,
-            'token'             => $this->_token,
-            'permissoes'        => $this->_permissions
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissions,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Listar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,    
+            'menu_perfil'               => 'class=active', 
         ]);
     }
 
     public function inserir(Request $request, Response $response, $args)
     {
         # Permissões
-        $permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/permissions?limit=1000');
+        $permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/permissions?limit=100&sort=ASC');
 
         foreach ($permissoes->data as $key => $data) {
             $perms[$data->system][$data->uri][$key] = ['id' => $data->id, 'name' => $data->name];
@@ -79,15 +81,17 @@ class UsergroupController
         }
 
         return $this->container->view->render($response, $this->_template . '/inserir.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Nova '. $this->_subtitulo,
-            'sessao'        => $this->session,                                
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'permissoes'    => $perms      
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissions,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Novo ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,    
+            'menu_perfil'               => 'class=active', 
+            'permissoes'                => $perms      
         ]);
     }
 
@@ -102,7 +106,7 @@ class UsergroupController
         $gp_permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/usergroup_has_permission?id='.$id.'&limit=1000');
 
         # Permissões
-        $permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/permissions?limit=1000');
+        $permissoes = UserManagerPlatform::GET($this->_hostname, $this->_token, '/permissions?limit=100&sort=ASC');
 
         foreach ($permissoes->data as $key => $data) {
             $perms[$data->system][$data->uri][$key] = ['id' => $data->id, 'name' => $data->name];
@@ -127,18 +131,20 @@ class UsergroupController
         }
 
         return $this->container->view->render($response, $this->_template . '/editar.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Editar '. $this->_subtitulo,
-            'sessao'        => $this->session,                      
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'id'            => $args['id'],
-            'rows'          => $rows->data,
-            'permissoes'    => $perms,
-            'gp_permissoes' => $gp_permissoes->data
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissions,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Editar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,    
+            'menu_perfil'               => 'class=active', 
+            'id'                        => $args['id'],
+            'rows'                      => $rows->data,
+            'permissoes'                => $perms,
+            'gp_permissoes'             => $gp_permissoes->data
         ]);        
     }
 

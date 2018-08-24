@@ -19,7 +19,7 @@ class UsersController
         # Parametros de Texto
         $this->_sistema     = 'configuracoes';
         $this->_subtitulo   = 'Usuário';        
-        $this->_titulo      = 'Configurações :: ' . $this->_subtitulo;
+        $this->_titulo      = 'Configurações :: Usuários';
         $this->_pagina      = 'usuarios';
         $this->_endpoint    = 'users';
         $this->_template    = '/interface/configuracoes/usuarios';
@@ -29,6 +29,7 @@ class UsersController
 
         # Permissões 
         $this->_permissions = [
+            'interface' => 'configuracoes',            
             'listar'    => 'listar-usuario',
             'inserir'   => 'inserir-usuario',
             'editar'    => 'editar-usuario',
@@ -40,15 +41,16 @@ class UsersController
     public function listar(Request $request, Response $response, $args)
     {
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
-            'endpoint'          => $this->_endpoint,
-            'pagina'            => $this->_pagina,
-            'menu_sistema'      => $this->_sistema,
-            'titulo'            => $this->_titulo,
-            'subtitulo'         => 'Listar ' . $this->_subtitulo,
-            'sessao'            => $this->session,            
-            'hostname'          => $this->_hostname,
-            'token'             => $this->_token,
-            'permissoes'        => $this->_permissions
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissions,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Listar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,    
+            'menu_usuarios'             => 'class=active'
         ]);
     }
 
@@ -85,16 +87,18 @@ class UsersController
         }
 
         return $this->container->view->render($response, $this->_template . '/inserir.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Nova '. $this->_subtitulo,
-            'sessao'        => $this->session,                                 
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'empresas'      => $empresas->data,
-            'perfil'        => $perfil->data     
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissions,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Novo ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,    
+            'menu_usuarios'             => 'class=active',
+            'empresas'                  => $empresas->data,
+            'perfil'                    => $perfil->data     
         ]);
     }
 
@@ -136,18 +140,20 @@ class UsersController
         }
 
         return $this->container->view->render($response, $this->_template . '/editar.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Editar '. $this->_subtitulo,
-            'sessao'        => $this->session,                     
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'id'            => $args['id'],
-            'rows'          => $rows->data,
-            'empresas'      => $empresas->data,
-            'perfil'        => $perfil->data    
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissions,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Editar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,    
+            'menu_usuarios'             => 'class=active',
+            'id'                        => $args['id'],
+            'rows'                      => $rows->data,
+            'empresas'                  => $empresas->data,
+            'perfil'                    => $perfil->data    
         ]);        
     }
 
@@ -198,15 +204,17 @@ class UsersController
         }
 
         return $this->container->view->render($response, $this->_template . '/alterar-senha.phtml', [
-            'endpoint'          => $this->_endpoint,
-            'pagina'            => $this->_pagina,
-            'menu_sistema'      => $this->_sistema,
-            'titulo'            => $this->_titulo,
-            'subtitulo'         => 'Alterar Senha do ' . $this->_subtitulo,
-            'sessao'            => $this->session,            
-            'hostname'          => $this->_hostname,
-            'token'             => $this->_token,
-            'id'                => $args['id'],            
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissions,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Alterar Senha do ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,    
+            'menu_usuarios'             => 'class=active',
+            'id'                        => $args['id'],            
         ]);
     }
 

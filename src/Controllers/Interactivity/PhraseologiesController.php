@@ -41,7 +41,8 @@ class PhraseologiesController
         $this->_hostname_flush_pu    = PLATFORM_UNIFIELD_FLUSHALL_CACHE;
 
         # Permissões 
-        $this->_permissions = [
+        $this->_permissoes = [
+            'interface' => 'interatividade',            
             'listar'    => 'listar-fraseologia',
             'inserir'   => 'inserir-fraseologia',
             'editar'    => 'editar-fraseologia',
@@ -65,20 +66,21 @@ class PhraseologiesController
         $tipos = Helpers_Interactivity_Phraseologies::getNameAndIdTypes($tipos);        
 
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
-            'endpoint'          => $this->_endpoint,
-            'pagina'            => $this->_pagina,
-            'menu_sistema'      => $this->_sistema,
-            'titulo'            => $this->_titulo,
-            'subtitulo'         => 'Listar ' . $this->_subtitulo,
-            'sessao'            => $this->session,            
-            'hostname'          => $this->_hostname,
-            'token'             => $this->_token,
-            'permissoes'        => $this->_permissions,
-            'campanhas'         => $campanhas,
-            'produtos'          => $produtos,
-            'la'                => $this->_la,
-            'tipos'             => $tipos,
-            'operadoras'        => $this->_operadora
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissoes,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Listar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
+            'campanhas'                 => $campanhas,
+            'produtos'                  => $produtos,
+            'la'                        => $this->_la,
+            'tipos'                     => $tipos,
+            'operadoras'                => $this->_operadora
         ]);
     }
 
@@ -103,14 +105,16 @@ class PhraseologiesController
         }
 
         return $this->container->view->render($response, $this->_template . '/inserir.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Novo '. $this->_subtitulo,
-            'sessao'        => $this->session,                             
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token       
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissoes,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Nova ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active'    
         ]);
     }
 
@@ -139,16 +143,18 @@ class PhraseologiesController
         }
 
         return $this->container->view->render($response, $this->_template . '/editar.phtml', [
-            'endpoint'      => $this->_endpoint,
-            'pagina'        => $this->_pagina,
-            'menu_sistema'  => $this->_sistema,
-            'titulo'        => $this->_titulo,
-            'subtitulo'     => 'Editar '. $this->_subtitulo,
-            'sessao'        => $this->session,                    
-            'hostname'      => $this->_hostname,
-            'token'         => $this->_token,
-            'id'            => $args['id'],
-            'rows'          => $rows      
+            'hostname'                  => $this->_hostname,
+            'token'                     => $this->_token,
+            'endpoint'                  => $this->_endpoint,
+            'sessao'                    => $this->session,
+            'permissoes'                => $this->_permissoes,
+            'pagina'                    => $this->_pagina,
+            'titulo'                    => $this->_titulo,
+            'subtitulo'                 => 'Editar ' . $this->_subtitulo,
+            'menu_sistema'              => $this->_sistema,
+            'menu_'.$this->_pagina      => 'class=active',
+            'id'                        => $args['id'],
+            'rows'                      => $rows      
         ]);        
     }
 
@@ -233,9 +239,9 @@ class PhraseologiesController
             $arr[] = $v->type->briefDescription;
             $arr[] = Helpers_Interactivity_Phraseologies::badgeColorForCarrier($v->carrier);
 
-            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissions['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
+            $editar =  (Permissions::has_perm($this->session['permissions'], $this->_permissoes['editar']))? '&nbsp;<a id="editar"title="Editar"><i class="fa fa-edit"></i></a>&nbsp;' : '';
 
-            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissions['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
+            $remover = (Permissions::has_perm($this->session['permissions'], $this->_permissoes['remover']))? '&nbsp;<a id="remover" title="Excluir"><i class="fa fa-remove"></i></a>&nbsp;' : '';
 
             $arr[]  = $editar . $remover;
             $data[] = $arr;
