@@ -27,7 +27,7 @@ $(document).ready(function() {
           "sInfoThousands": ".",
           "sLengthMenu": "_MENU_ resultados por página",
           "sLoadingRecords": "Carregando...",
-          "sProcessing": "Carregando...",
+          "sProcessing": "<p class='loadProcessing'><img src='"+base_url+"/assets/images/loader.gif' width='50px'></p>",          
           "sZeroRecords": "Nenhum registro encontrado",
           "sSearch": "Pesquisar",
           "oPaginate": {
