@@ -85,7 +85,7 @@ class PhraseologiesController
     }
 
     public function inserir(Request $request, Response $response, $args)
-    { 
+    {    
         // Todas as campanhas
         $campanhas = UserManagerPlatform::GET($this->_hostname_campaign, $this->_token_campaign, '/'. $this->_endpoint_campaign);
         $campanhas = Helpers_Interactivity_Phraseologies::getNameAndIdCampaign($campanhas);
@@ -96,21 +96,32 @@ class PhraseologiesController
 
         // Tipos de fraseologias
         $tipos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies/all-types');
-        $tipos = Helpers_Interactivity_Phraseologies::getNameAndIdTypes($tipos);   
+        $tipos = Helpers_Interactivity_Phraseologies::getNameAndIdTypes($tipos);
 
         if($request->isPost())
         {
             $body = $request->getParsedBody();
+
+            foreach ($body['messages'] as $k => $v) {
+                $rows[$k] = ['ordination' => $k, 'message' => $v];
+            }
+
+            $body['product']    = ['id' => $body['product']];
+            $body['type']       = ['type' => $body['type'], 'briefDescription' => $body['briefDescription']];
+            $body['messages']   = $rows;
+
+            unset($body['briefDescription']);
+
             $rows = UserManagerPlatform::POST($this->_hostname, $this->_token, '/'. $this->_endpoint, $body);
 
-            switch ($rows->status) {
-                case 'success':
-                    $this->container->flash->addMessage('success', $rows->message);
+            switch ($rows->http_code) {
+                case '201':
+                    $this->container->flash->addMessage('success', 'Registro criado com sucesso!');
                     return $response->withStatus(200)->withHeader('Location', 'listar');
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
+                    $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
                     return $response->withHeader('Location', 'inserir');                
                     break;
             }
@@ -137,24 +148,59 @@ class PhraseologiesController
 
     public function editar(Request $request, Response $response, $args)
     {
+        // Todas as campanhas
+        $campanhas = UserManagerPlatform::GET($this->_hostname_campaign, $this->_token_campaign, '/'. $this->_endpoint_campaign);
+        $campanhas = Helpers_Interactivity_Phraseologies::getNameAndIdCampaign($campanhas);
+
+        // Todos os produtos
+        $produtos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/products?limit=10000');
+        $produtos = Helpers_Interactivity_Phraseologies::getNameAndIdProducts($produtos);
+
+        // Tipos de fraseologias
+        $tipos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies/all-types');
+        $tipos = Helpers_Interactivity_Phraseologies::getNameAndIdTypes($tipos);
+
         // Recuperando os dados pelo id
         $id = $args['id'];
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
+
+        $parameters = [
+            'type'          => (!empty($rows->type->type))? $rows->type->type : '',
+            'shortNumber'   => (!empty($rows->shortNumber))? $rows->shortNumber : '',
+            'carrier'       => (!empty($rows->carrier))? $rows->carrier : '',
+            'campaignUuid'  => (!empty($rows->campaignUuid))? $rows->campaignUuid : '',$rows->campaignUuid,
+            'productId'     => (!empty($rows->product->id))? $rows->product->id : ''
+        ];
+
+        $uri = '';
+        foreach ($parameters as $k => $v) {
+            $uri .= "&". $k ."=". $v;
+            $url['params'] = $uri;
+        }
+
+        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/find?' . $url['params']);
+
+
+        // echo "<pre>";
+        // print_r($rows);
+        // die();
+
+
 
         if($request->isPost())
         {
             $body = $request->getParsedBody();
             $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/'. $this->_endpoint .'/'. $id, $body);
 
-            switch ($rows->status) {
-                case 'success':
-                    $this->container->flash->addMessage('success', $rows->message);
-                    return $response->withStatus(200)->withHeader('Location', '../listar');
+            switch ($rows->http_code) {
+                case '200':
+                    $this->container->flash->addMessage('success', 'Registro alterado com sucesso!');
+                    return $response->withStatus(200)->withHeader('Location', 'listar');
                     break;
                 
                 default:
-                    $this->container->flash->addMessage('error', $rows->message);
-                    return $response->withHeader('Location', '../editar/'. $id);
+                    $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
+                    return $response->withHeader('Location', 'inserir');                
                     break;
             }
         }
@@ -170,6 +216,11 @@ class PhraseologiesController
             'subtitulo'                 => 'Editar ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
             'menu_'.$this->_pagina      => 'class=active',
+            'campanhas'                 => $campanhas,
+            'produtos'                  => $produtos,
+            'la'                        => $this->_la,
+            'tipos'                     => $tipos,
+            'operadoras'                => $this->_operadora,            
             'id'                        => $args['id'],
             'rows'                      => $rows      
         ]);        
@@ -182,8 +233,8 @@ class PhraseologiesController
 
         $rows = UserManagerPlatform::DELETE($this->_hostname, $this->_token, '/'. $this->_endpoint .'/', $id);
 
-        switch ($rows->status) {
-            case 'success':
+        switch ($rows->http_code) {
+            case '204':
                 return $response->withJson($rows, 200)
                 ->withHeader('Content-type', 'application/json');  
                 break;
@@ -192,7 +243,7 @@ class PhraseologiesController
                 return $response->withJson($rows, 400)
                 ->withHeader('Content-type', 'application/json');  
                 break;
-        }     
+        }    
     }
 
     public function publicar(Request $request, Response $response, $args)

@@ -139,6 +139,66 @@ $(document).on("input", "#message", function() {
     }
 });
 
-$( "#message" ).keyup(function() {
-    $('#valeu').empty().val($(this).val());
+$("#message").keyup(function() {
+    this.value = this.value.replace(/[~´`^áéíóúàèìòùâêîôûãõç\\]+/g,'');    
+    $('.preview-textarea-fraseologies').empty().val($(this).val());
+});
+
+
+// Criação da listagem de fraseologias
+$("#preview").sortable({
+    connectWith: ".connectList",
+    update: function( event, ui ) {
+        var preview = $( "#preview" ).sortable("toArray");
+    }
+}).disableSelection();
+
+
+// Exibição das fraseologias 
+var x = 1;
+var recuperaValor = $("#countMessage").val();
+var x = (recuperaValor)? recuperaValor + 1 : '1';
+
+var click = [];
+
+
+$('#adiciona-fraseologia').click( function() {
+    var msg = $("#message").val();
+
+    if(msg != ''){
+
+        click = 1;
+
+        $("#preview").append('<li class="success-element" id="message_'+ x +'"><textarea class="form-control" id="message" maxlength="160" name="messages['+x+']" >'+msg+'</textarea><div class="agile-detail"><a type="button" id="r'+x+'" data-delete="'+x+'" class="pull-right btn btn-xs btn-white">Remover</a>&nbsp;</div></li>');
+
+        $("#r"+x+"").click(function(){
+            $("#message_"+ $(this).attr('data-delete') +"").remove();
+        });
+
+        x++;             
+    }
+});
+
+function removeMsg(id){
+    $("#message_"+ id +"").remove();
+}
+
+
+// Informa a descrição dos tipos
+$("#type").change(function() {
+    var selected = $(this).find(':selected').attr('data-description');
+
+    if(!selected){
+        $("#description").hide();
+    }
+
+    $("#description").show();
+    $("#description").html(selected);
+    $("#briefDescription").val(selected);
+});
+
+// Informa o uuid da campanha
+$("#campaignName").change(function() {
+   var selected = $(this).find(':selected').attr('data-campaignuuid');
+   $("#campaignUuid").val(selected);
 });

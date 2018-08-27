@@ -18,24 +18,109 @@
                     <h5>{{subtitulo}}</h5>
                     </div>
                     <div class="ibox-content">
-                        <form class="form-horizontal" method="POST" action="{{ path_for('editar-parceiro', {id: id}) }}">
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Nome</label>
-                                <div class="col-sm-4">
-                                    <input type="text" class="form-control" name="name" required="true" value="{{ rows.name }}">
-                                </div>
-                            </div>
+                        <form class="form-horizontal" method="POST" action="{{ path_for('editar-fraseologia', {id: id}) }}">
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Tipo</label>
                                 <div class="col-sm-4">
-                                <select class="form-control" name="type" id="type" required="true">
-                                    <option selected="true" value="">Selecione um tipo...</option>
-                                        <option value="MEDIA" {% if rows.type == 'MEDIA'%} selected="true" {% endif %}>Mídia</option>
-                                        <option value="CONTENT" {% if rows.type == 'CONTENT'%} selected="true" {% endif %}>Conteúdo</option>
-                                        <option value="MEDIA_AND_CONTENT" {% if rows.type == 'MEDIA_AND_CONTENT'%} selected="true" {% endif %}>Mídia/Conteúdo</option>
+                                    <select class="form-control select2" name="type" id="type">
+                                        <option data-description="" value="">[Selecione um tipo]</option>
+                                        {% for tipo in tipos %}
+                                        <option value="{{ tipo.name }}" data-description="{{ tipo.brief_description }}" {{(rows.type.type == tipo.name) ? 'selected' : '' }}>{{ tipo.description }}</option>
+                                        {% endfor %}
                                     </select>
+                                    <input type="hidden" name="briefDescription" id="briefDescription" value="">
+                                    <span class="help-block m-b-none" style="font-weight: bold;" id="description"></span>
                                 </div>
-                            </div>                             
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Produto</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control select2" name="product" id="product">
+                                        <option value="">[Selecione um produto]</option>
+                                        {% for produto in produtos %}
+                                        <option value="{{ produto.id }}" {{(rows.product.id == produto.id) ? 'selected' : '' }}>{{ produto.name }}</option>
+                                        {% endfor %}
+                                    </select> 
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Campanha</label>
+                                <div class="col-sm-4">
+                                    <select class="form-control select2" name="campaignName" id="campaignName">
+                                        <option value="">[Selecione uma campanha]</option>
+                                        {% for campanha in campanhas %}
+                                        <option value="{{ campanha.name }}" data-campaignuuid="{{ campanha.id }}" {{(rows.campaignUuid == campanha.id) ? 'selected' : '' }}>{{ campanha.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="hidden" name="campaignUuid" id="campaignUuid" value="">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Operadora</label>
+                                <div class="col-sm-4">
+                                <select  class="form-control select2" name="carrier" id="carrier">
+                                    <option value="">[Selecione uma operadora]</option>
+                                    {% for operadora in operadoras %}
+                                    <option value="{{ operadora }}" {{(rows.carrier == operadora) ? 'selected' : '' }}>{{ operadora }}</option>
+                                    {% endfor %}
+                                </select>   
+                                </div>
+                            </div>  
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">LA</label>
+                                <div class="col-sm-4">
+                                <select class="form-control select2" name="shortNumber" id="shortNumber">
+                                    <option value="">[Selecione um la]</option>
+                                    {% for shortnumber in la %}
+                                    <option value="{{ shortnumber }}" {{(rows.shortNumber == shortnumber) ? 'selected' : '' }}>{{ shortnumber }}</option>
+                                    {% endfor %}
+                                </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Mensagem</label>
+                                    <div class="col-sm-4">
+                                    <textarea class="form-control" rows="6" name="messages" id="message" required="true"></textarea>
+                                    <button type="button" id="adiciona-fraseologia" class="btn btn-block btn-outline btn-primary">
+                                        <i class="fa fa-plus"></i> Adicionar
+                                    </button>
+                                    <small class="caracteres"></small>            
+                                    <div class="hr-line-dashed"></div>
+                                    <p class="small"><i class="fa fa-hand-o-up"></i> Ordene as fraseologias:</p>
+                                    <input type="hidden" id="countMessage" value="{{ rows.messages|length }}">
+                                    <ul class="sortable-list connectList agile-list ui-sortable" id="preview">
+                                        
+                                        {% for k, v in rows.messages %}
+
+                                            <li class="success-element" id="message_{{ v.ordination}}">
+
+                                            <textarea class="form-control" maxlength="160" name="messages[{{ v.ordination}}]" >{{ v.message}}</textarea>
+
+                                                <div class="agile-detail">
+                                                    <a type="button" id="r{{ v.ordination}}" onclick="removeMsg({{ v.ordination}})" class="pull-right btn btn-xs btn-white">Remover</a>&nbsp;
+                                                </div>
+                                            </li>
+
+
+                                        {% endfor %}
+
+                                    </ul>
+                                </div>
+
+                                <div class="col-sm-4 preview-image-fraseologies" align="center">
+                                    <img src="{{ base_url() }}/assets/images/phone.png" width="100%" height="100%">
+                                    <div class="preview-fraseologies">
+                                        <textarea class="preview-textarea-fraseologies" readonly="true" rows="7"></textarea>
+                                    </div>
+                                </div>
+
+                           </div> 
+                                   
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
                                 <div class="col-sm-4 col-sm-offset-2">
@@ -44,6 +129,9 @@
                                 </div>
                             </div>
                         </form>
+
+
+
                     </div>
                 </div>
             </div>

@@ -23,11 +23,13 @@
                                 <label class="col-sm-2 control-label">Tipo</label>
                                 <div class="col-sm-4">
                                     <select class="form-control select2" name="type" id="type">
-                                        <option value="">[Selecione um tipo]</option>
+                                        <option data-description="" value="">[Selecione um tipo]</option>
                                         {% for tipo in tipos %}
-                                        <option value="{{ tipo.type }}" title="{{ tipo.description }}">{{ tipo.brief_description }}</option>
+                                        <option value="{{ tipo.name }}" data-description="{{ tipo.brief_description }}">{{ tipo.description }}</option>
                                         {% endfor %}
-                                    </select> 
+                                    </select>
+                                    <input type="hidden" name="briefDescription" id="briefDescription" value="">
+                                    <span class="help-block m-b-none" style="font-weight: bold;" id="description"></span>
                                 </div>
                             </div>
 
@@ -49,9 +51,10 @@
                                     <select class="form-control select2" name="campaignName" id="campaignName">
                                         <option value="">[Selecione uma campanha]</option>
                                         {% for campanha in campanhas %}
-                                        <option value="{{ campanha.id }}">{{ campanha.name }}</option>
+                                        <option value="{{ campanha.name }}" data-campaignuuid="{{ campanha.id }}">{{ campanha.name }}</option>
                                         {% endfor %}
-                                    </select> 
+                                    </select>
+                                    <input type="hidden" name="campaignUuid" id="campaignUuid" value="">
                                 </div>
                             </div>
 
@@ -82,40 +85,24 @@
                             <div class="form-group">
                                 <label class="col-sm-2 control-label">Mensagem</label>
                                     <div class="col-sm-4">
-
-<!-- <textarea id="message"></textarea>
-<textarea id="valeu" name="valeu"></textarea>
-<div id="teste"></div>
-<small class="caracteres"></small>
- -->
-
-                                    <textarea class="form-control" rows="6" name="messages" id="msg" required="true"></textarea>
-                                    <button type="button" class="btn btn-block btn-outline btn-primary"><i class="fa fa-plus"></i> Adicionar</button>
-                                    <small class="caracteres"></small>
-
+                                    <textarea class="form-control" rows="6" name="messages" id="message" required="true"></textarea>
+                                    <button type="button" id="adiciona-fraseologia" class="btn btn-block btn-outline btn-primary">
+                                        <i class="fa fa-plus"></i> Adicionar
+                                    </button>
+                                    <small class="caracteres"></small>            
+                                    <div class="hr-line-dashed"></div>
+                                    <p class="small"><i class="fa fa-hand-o-up"></i> Ordene as fraseologias:</p>
+                                    <ul class="sortable-list connectList agile-list ui-sortable" id="preview"></ul>
                                 </div>
 
-                                    <div class="col-sm-4">
-
-<div class="panel panel-primary">
-                                        <div class="panel-heading">
-                                            Pre-visualização da Mensagem
-                                        </div>
-                                        <div class="panel-body">
-                                            
-                                        </div>
+                                <div class="col-sm-4 preview-image-fraseologies" align="center">
+                                    <img src="{{ base_url() }}/assets/images/phone.png" width="100%" height="100%">
+                                    <div class="preview-fraseologies">
+                                        <textarea class="preview-textarea-fraseologies" readonly="true" rows="7"></textarea>
                                     </div>
-                                    </div>
+                                </div>
 
                            </div> 
-
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">Ordene as fraseologias</label>
-                                <div class="col-sm-4">
- 
-                                </div>
-                            </div>  
-
                                    
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
@@ -125,8 +112,6 @@
                                 </div>
                             </div>
                         </form>
-
-
                     </div>
                 </div>
             </div>

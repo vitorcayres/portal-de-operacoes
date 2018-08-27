@@ -10250,3 +10250,23 @@ body.md-skin {
     position: relative;
     top: 50%;
 }
+
+/* Fraseologias */
+.preview-fraseologies{
+position: absolute;
+    left: 50%;
+    margin-left: -74px;
+    top: 74%;
+    margin-top: -217px;
+}
+
+.preview-image-fraseologies{
+    position: relative;
+    width: 400px;
+}
+
+.preview-textarea-fraseologies{
+    margin: 0px;
+    height: 258px;
+    width: 149px;
+}

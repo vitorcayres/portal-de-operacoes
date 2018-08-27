@@ -54,7 +54,8 @@ class Helpers_Interactivity_Phraseologies
             $arr = array(
                 'id' => $k,
                 'name' => $v->type,
-                'brief_description' => $v->brief_description
+                'brief_description' => $v->description,
+                'description' => $v->brief_description
             );
 
             $data[] = $arr;
