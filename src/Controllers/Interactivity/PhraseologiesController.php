@@ -103,7 +103,7 @@ class PhraseologiesController
             $body = $request->getParsedBody();
 
             foreach ($body['messages'] as $k => $v) {
-                $rows[$k] = ['ordination' => $k, 'message' => $v];
+                $rows[] = ['ordination' => $k, 'message' => $v];
             }
 
             $body['product']    = ['id' => $body['product']];
@@ -162,14 +162,14 @@ class PhraseologiesController
 
         // Recuperando os dados pelo id
         $id = $args['id'];
-        $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
+        $search = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
 
         $parameters = [
-            'type'          => (!empty($rows->type->type))? $rows->type->type : '',
-            'shortNumber'   => (!empty($rows->shortNumber))? $rows->shortNumber : '',
-            'carrier'       => (!empty($rows->carrier))? $rows->carrier : '',
-            'campaignUuid'  => (!empty($rows->campaignUuid))? $rows->campaignUuid : '',$rows->campaignUuid,
-            'productId'     => (!empty($rows->product->id))? $rows->product->id : ''
+            'type'          => (!empty($search->type->type))? $search->type->type : '',
+            'shortNumber'   => (!empty($search->shortNumber))? $search->shortNumber : '',
+            'carrier'       => (!empty($search->carrier))? $search->carrier : '',
+            'campaignUuid'  => (!empty($search->campaignUuid))? $search->campaignUuid : '',
+            'productId'     => (!empty($search->product->id))? $search->product->id : ''
         ];
 
         $uri = '';
@@ -179,28 +179,36 @@ class PhraseologiesController
         }
 
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/find?' . $url['params']);
-
-
-        // echo "<pre>";
-        // print_r($rows);
-        // die();
-
-
+        $rows->parameters = $url['params'];
 
         if($request->isPost())
         {
             $body = $request->getParsedBody();
-            $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/'. $this->_endpoint .'/'. $id, $body);
+
+            foreach ($body['messages'] as $ordination => $message) {
+                $messages[] = ['ordination' => $ordination, 'message' => $message];
+            }
+
+            $body['product']    = ['id' => $body['product']];
+            $body['type']       = ['type' => $body['type']];
+            $body['messages']   = $messages;
+
+            $parameters = $body['parameters'];
+            unset($body['briefDescription']);
+            unset($body['campaignName']);
+            unset($body['parameters']);
+
+            $rows = UserManagerPlatform::PUT($this->_hostname, $this->_token, '/'. $this->_endpoint . '/find?' . $parameters, $body);
 
             switch ($rows->http_code) {
                 case '200':
                     $this->container->flash->addMessage('success', 'Registro alterado com sucesso!');
-                    return $response->withStatus(200)->withHeader('Location', 'listar');
+                    return $response->withStatus(200)->withHeader('Location', '../listar');
                     break;
                 
                 default:
                     $this->container->flash->addMessage('error', 'Ops, ocorreu um erro. Tente novamente!');
-                    return $response->withHeader('Location', 'inserir');                
+                    return $response->withHeader('Location', '../editar/'. $id);
                     break;
             }
         }

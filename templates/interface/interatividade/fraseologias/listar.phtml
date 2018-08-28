@@ -57,7 +57,7 @@
                                 <select class="form-control select2 form-search" name="type" id="type" style="width: 250px;">
                                     <option value="">[FILTRAR POR TIPO]</option>
                                     {% for tipo in tipos %}
-                                    <option value="{{ tipo.type }}" title="{{ tipo.description }}">{{ tipo.brief_description }}</option>
+                                    <option value="{{ tipo.name }}" title="{{ tipo.brief_description }}">{{ tipo.description }}</option>
                                     {% endfor %}
                                 </select> 
                             </div>
