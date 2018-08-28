@@ -7,6 +7,7 @@ use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\Permissions;
 use App\Libraries\UserManagerPlatform;
+use App\Helpers\Helpers_Interactivity_Filters;
 use App\Helpers\Helpers_Interactivity_News;
 use App\Helpers\Helpers_Interactivity_Offers;
 
@@ -36,15 +37,16 @@ class NewsController
             'editar'    => 'editar-noticia',
             'remover'   => 'remover-noticia',
             'importar'  => 'importar-noticia'
-        ];         
+        ];
+
+        # Filtros
+        $this->_filterOffers    = Helpers_Interactivity_Filters::filterOffers();
+        $this->_filterPartners  = Helpers_Interactivity_Filters::filterPartners();
+        $this->_filterChannels  = Helpers_Interactivity_Filters::filterChannels();        
     }    
 
     public function listar(Request $request, Response $response, $args)
     {
-        // Todas as ofertas
-        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
-        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
-
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'hostname'                  => $this->_hostname,
             'token'                     => $this->_token,
@@ -56,16 +58,12 @@ class NewsController
             'subtitulo'                 => 'Listar ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
             'menu_'.$this->_pagina      => 'class=active',
-            'ofertas'                   => $ofertas            
+            'ofertas'                   => $this->_filterOffers          
         ]);
     }
 
     public function inserir(Request $request, Response $response, $args)
     {
-        // Todas as ofertas
-        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
-        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
-
         if($request->isPost())
         {
             $body = $request->getParsedBody();
@@ -104,16 +102,12 @@ class NewsController
             'subtitulo'                 => 'Nova ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
             'menu_'.$this->_pagina      => 'class=active',
-            'ofertas'                   => $ofertas      
+            'ofertas'                   => $this->_filterOffers    
         ]);
     }
 
     public function editar(Request $request, Response $response, $args)
-    {
-        // Todas as ofertas
-        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
-        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);        
-
+    {    
         // Recupera os dados pelo id
         $id = $args['id'];
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
@@ -175,7 +169,7 @@ class NewsController
             'menu_'.$this->_pagina      => 'class=active',
             'id'                        => $args['id'],
             'rows'                      => $rows,
-            'ofertas'                   => $ofertas   
+            'ofertas'                   => $this->_filterOffers
         ]);        
     }
 

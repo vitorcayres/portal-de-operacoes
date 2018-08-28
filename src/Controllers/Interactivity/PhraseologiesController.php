@@ -7,10 +7,10 @@ use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
+use App\Helpers\Helpers_Interactivity_Filters;
 use App\Helpers\Helpers_Interactivity_Phraseologies;
+use App\Helpers\Helpers_Interactivity_Products;
 use App\Helpers\Helpers_Interactivity_Luckynumber;
-
-
 
 class PhraseologiesController
 {
@@ -28,14 +28,7 @@ class PhraseologiesController
         # Variaveis de ambiente da API de Interatividade 
         $this->_hostname    = INTERACTIVITY_HOSTNAME;
         $this->_token       = INTERACTIVITY_TOKEN;
-        $this->_endpoint    = 'phraseologies';
-        $this->_la          = INTERACTIVITY_LA;
-        $this->_operadora   = INTERACTIVITY_CARRIER;        
-
-        # Variaveis de ambiente da API de Campanhas
-        $this->_hostname_campaign    = CAMPAIGN_HOSTNAME;
-        $this->_token_campaign       = CAMPAIGN_TOKEN;        
-        $this->_endpoint_campaign    = 'getcampaigns';
+        $this->_endpoint    = 'phraseologies';    
 
         # Variaveis de ambiente da API de FlushPlatformUnifield
         $this->_hostname_flush_pu    = PLATFORM_UNIFIELD_FLUSHALL_CACHE;
@@ -48,23 +41,18 @@ class PhraseologiesController
             'editar'    => 'editar-fraseologia',
             'remover'   => 'remover-fraseologia',
             'publicar'  => 'publicar-fraseologia'
-        ];         
+        ];
+
+        # Filtros
+        $this->_filterCampaigns = Helpers_Interactivity_Filters::filterCampaigns();
+        $this->_filterProducts  = Helpers_Interactivity_Filters::filterProducts();
+        $this->_filterTypes     = Helpers_Interactivity_Filters::filterTypes();
+        $this->_filterLa        = INTERACTIVITY_LA;
+        $this->_filterCarrier   = INTERACTIVITY_CARRIER;
     }    
 
     public function listar(Request $request, Response $response, $args)
-    {
-        // Todas as campanhas
-        $campanhas = UserManagerPlatform::GET($this->_hostname_campaign, $this->_token_campaign, '/'. $this->_endpoint_campaign);
-        $campanhas = Helpers_Interactivity_Phraseologies::getNameAndIdCampaign($campanhas);
-
-        // Todos os produtos
-        $produtos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/products?limit=10000');
-        $produtos = Helpers_Interactivity_Phraseologies::getNameAndIdProducts($produtos);
-
-        // Tipos de fraseologias
-        $tipos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies/all-types');
-        $tipos = Helpers_Interactivity_Phraseologies::getNameAndIdTypes($tipos);        
-
+    {  
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'hostname'                  => $this->_hostname,
             'token'                     => $this->_token,
@@ -76,28 +64,16 @@ class PhraseologiesController
             'subtitulo'                 => 'Listar ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
             'menu_'.$this->_pagina      => 'class=active',
-            'campanhas'                 => $campanhas,
-            'produtos'                  => $produtos,
-            'la'                        => $this->_la,
-            'tipos'                     => $tipos,
-            'operadoras'                => $this->_operadora
+            'campanhas'                 => $this->_filterCampaigns,
+            'produtos'                  => $this->_filterProducts,
+            'tipos'                     => $this->_filterTypes,
+            'la'                        => $this->_filterLa,
+            'operadoras'                => $this->_filterCarrier
         ]);
     }
 
     public function inserir(Request $request, Response $response, $args)
     {    
-        // Todas as campanhas
-        $campanhas = UserManagerPlatform::GET($this->_hostname_campaign, $this->_token_campaign, '/'. $this->_endpoint_campaign);
-        $campanhas = Helpers_Interactivity_Phraseologies::getNameAndIdCampaign($campanhas);
-
-        // Todos os produtos
-        $produtos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/products?limit=10000');
-        $produtos = Helpers_Interactivity_Phraseologies::getNameAndIdProducts($produtos);
-
-        // Tipos de fraseologias
-        $tipos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies/all-types');
-        $tipos = Helpers_Interactivity_Phraseologies::getNameAndIdTypes($tipos);
-
         if($request->isPost())
         {
             $body = $request->getParsedBody();
@@ -138,28 +114,16 @@ class PhraseologiesController
             'subtitulo'                 => 'Nova ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
             'menu_'.$this->_pagina      => 'class=active',
-            'campanhas'                 => $campanhas,
-            'produtos'                  => $produtos,
-            'la'                        => $this->_la,
-            'tipos'                     => $tipos,
-            'operadoras'                => $this->_operadora               
+            'campanhas'                 => $this->_filterCampaigns,
+            'produtos'                  => $this->_filterProducts,
+            'tipos'                     => $this->_filterTypes,
+            'la'                        => $this->_filterLa,
+            'operadoras'                => $this->_filterCarrier              
         ]);
     }
 
     public function editar(Request $request, Response $response, $args)
     {
-        // Todas as campanhas
-        $campanhas = UserManagerPlatform::GET($this->_hostname_campaign, $this->_token_campaign, '/'. $this->_endpoint_campaign);
-        $campanhas = Helpers_Interactivity_Phraseologies::getNameAndIdCampaign($campanhas);
-
-        // Todos os produtos
-        $produtos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/products?limit=10000');
-        $produtos = Helpers_Interactivity_Phraseologies::getNameAndIdProducts($produtos);
-
-        // Tipos de fraseologias
-        $tipos = UserManagerPlatform::GET($this->_hostname, $this->_token, '/phraseologies/all-types');
-        $tipos = Helpers_Interactivity_Phraseologies::getNameAndIdTypes($tipos);
-
         // Recuperando os dados pelo id
         $id = $args['id'];
         $search = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
@@ -224,11 +188,11 @@ class PhraseologiesController
             'subtitulo'                 => 'Editar ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
             'menu_'.$this->_pagina      => 'class=active',
-            'campanhas'                 => $campanhas,
-            'produtos'                  => $produtos,
-            'la'                        => $this->_la,
-            'tipos'                     => $tipos,
-            'operadoras'                => $this->_operadora,            
+            'campanhas'                 => $this->_filterCampaigns,
+            'produtos'                  => $this->_filterProducts,
+            'tipos'                     => $this->_filterTypes,
+            'la'                        => $this->_filterLa,
+            'operadoras'                => $this->_filterCarrier,          
             'id'                        => $args['id'],
             'rows'                      => $rows      
         ]);        
@@ -310,7 +274,7 @@ class PhraseologiesController
             $arr   = [];
             $arr[] = $v->id;
             $arr[] = $v->campaignName;
-            $arr[] = (!empty($v->product->id))? '' : '';            
+            $arr[] = (!empty($v->product->id))? Helpers_Interactivity_Products::productById($v->product->id) : '';            
             $arr[] = $v->shortNumber;
             $arr[] = $v->type->briefDescription;
             $arr[] = Helpers_Interactivity_Phraseologies::badgeColorForCarrier($v->carrier);

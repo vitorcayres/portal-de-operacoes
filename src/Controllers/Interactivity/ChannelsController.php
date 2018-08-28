@@ -7,6 +7,7 @@ use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
+use App\Helpers\Helpers_Interactivity_Filters;
 use App\Helpers\Helpers_Interactivity_Channels;
 use App\Helpers\Helpers_Interactivity_Offers;
 
@@ -48,18 +49,14 @@ class ChannelsController
             'saturday'  => 'Sábado'
         ];
 
+        # Filtros
+        $this->_filterOffers    = Helpers_Interactivity_Filters::filterOffers();
+        $this->_filterPartners  = Helpers_Interactivity_Filters::filterPartners();
+        $this->_filterChannels  = Helpers_Interactivity_Filters::filterChannels();        
     }    
 
     public function listar(Request $request, Response $response, $args)
     {
-        // Todos os canais
-        $canais = UserManagerPlatform::GET($this->_hostname, $this->_token, '/channels?limit=1000');
-        $canais = Helpers_Interactivity_Channels::getNameAndIdChannels($canais);
-
-        // Todas as ofertas
-        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
-        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
-
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'hostname'                  => $this->_hostname,
             'token'                     => $this->_token,
@@ -70,18 +67,14 @@ class ChannelsController
             'titulo'                    => $this->_titulo,
             'subtitulo'                 => 'Listar ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
-            'menu_'.$this->_pagina      => 'class=active',
-            'ofertas'                   => $ofertas,
-            'canais'                    => $canais  
+            'menu_'. $this->_pagina     => 'class=active',
+            'ofertas'                   => $this->_filterOffers,
+            'canais'                    => $this->_filterChannels
         ]);
     }
 
     public function inserir(Request $request, Response $response, $args)
     {
-        // Todas as ofertas
-        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
-        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
-
         if($request->isPost())
         {
             $body = $request->getParsedBody();
@@ -114,17 +107,13 @@ class ChannelsController
             'subtitulo'                 => 'Novo ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
             'menu_'.$this->_pagina      => 'class=active',
-            'ofertas'                   => $ofertas,
+            'ofertas'                   => $this->_filterOffers,
             'datas'                     => $this->_dias_da_semana                  
         ]);
     }
 
     public function editar(Request $request, Response $response, $args)
     {
-        // Todas as ofertas
-        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
-        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
-
         // Recuperando os dados pelo id
         $id = $args['id'];
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
@@ -169,7 +158,7 @@ class ChannelsController
             'menu_'.$this->_pagina      => 'class=active',
             'id'                        => $args['id'],
             'rows'                      => $rows,
-            'ofertas'                   => $ofertas,
+            'ofertas'                   => $this->_filterOffers,
             'datas'                     => $this->_dias_da_semana,
             'agendamento'               => (array) $rows->schedulingRules     
         ]);        

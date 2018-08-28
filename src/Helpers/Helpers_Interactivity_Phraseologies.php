@@ -4,65 +4,6 @@ namespace App\Helpers;
 
 class Helpers_Interactivity_Phraseologies
 {
-
-	/** 
-	* Função: Tratativa para retornar somente o uuid e o nome das campanhas
-	* Pagina: campanhas
-	*/
-	public function getNameAndIdCampaign($params) {
-		
-        $data = [];
-        foreach ($params->data as $v) {    
-            $arr = array(
-                'id' => $v->uuid,
-                'name' => $v->name
-            );
-
-            $data[] = $arr;
-        }
-        return $data;
-	}  	
-	
-	/** 
-	* Função: Tratativa para retornar somente o id e o nome dos produtos
-	* Pagina: produtos
-	*/
-	public function getNameAndIdProducts($params) {
-		
-        $data = [];
-        foreach ($params->data as $v) {    
-            $arr = array(
-                'id' => $v->id,
-                'name' => $v->name
-            );
-
-            $data[] = $arr;
-        }
-        return $data;
-	}
-
-	/** 
-	* Função: Tratativa para retornar somente o id e o nome dos tipos
-	* Pagina: fraseologias
-	*/
-	public function getNameAndIdTypes($params) {
-
-		unset($params->http_code);
-			
-        $data = [];
-        foreach ($params as $k => $v) {    
-            $arr = array(
-                'id' => $k,
-                'name' => $v->type,
-                'brief_description' => $v->description,
-                'description' => $v->brief_description
-            );
-
-            $data[] = $arr;
-        }
-        return $data;
-	}	
-
 	/** 
 	* Função: Tratativa para retornar o badge referente a operadora
 	* Pagina: fraseologias

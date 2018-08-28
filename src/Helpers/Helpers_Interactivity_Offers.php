@@ -42,42 +42,4 @@ class Helpers_Interactivity_Offers{
 				break;
 		}
 	}
-	
-	/** 
-	* Função: Tratativa para retornar somente o id e o nome dos parceiros
-	* Pagina: parceiros
-	*/
-	public function getNameAndIdPartners($params) {
-		
-        $data = [];
-        foreach ($params->data as $v) {    
-            $arr = array(
-                'id' => $v->id,
-                'name' => $v->name
-            );
-
-            $data[] = $arr;
-        }
-        return $data;
-	}
-
-	/** 
-	* Função: Tratativa para retornar somente o id e o nome das ofertas
-	* Pagina: ofertas
-	*/
-	public function getNameAndIdOffers($params) {
-		
-        $data = [];
-        foreach ($params->data as $v) {    
-            $arr = array(
-                'id' => $v->id,
-                'name' => $v->name,
-                'description' => $v->description,
-                'partner_id' => $v->partner->id
-            );
-
-            $data[] = $arr;
-        }
-        return $data;
-	}	
 }

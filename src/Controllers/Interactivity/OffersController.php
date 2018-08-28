@@ -7,7 +7,9 @@ use Slim\Http\Response;
 use \Adbar\Session;
 use App\Libraries\UserManagerPlatform;
 use App\Libraries\Permissions;
+use App\Helpers\Helpers_Interactivity_Filters;
 use App\Helpers\Helpers_Interactivity_Offers;
+
 
 class OffersController
 {
@@ -34,19 +36,15 @@ class OffersController
             'inserir'   => 'inserir-oferta',
             'editar'    => 'editar-oferta',
             'remover'   => 'remover-oferta'
-        ];         
+        ];
+
+        # Filtros
+        $this->_filterOffers    = Helpers_Interactivity_Filters::filterOffers();
+        $this->_filterPartners  = Helpers_Interactivity_Filters::filterPartners();
     }    
 
     public function listar(Request $request, Response $response, $args)
     {
-
-        // Todas as ofertas
-        $ofertas = UserManagerPlatform::GET($this->_hostname, $this->_token, '/offers?limit=1000');
-        $ofertas = Helpers_Interactivity_Offers::getNameAndIdOffers($ofertas);
-
-        // Todos os parceiros
-        $parceiros = UserManagerPlatform::GET($this->_hostname, $this->_token, '/partners?limit=1000');
-        $parceiros = Helpers_Interactivity_Offers::getNameAndIdPartners($parceiros);      
 
         return $this->container->view->render($response, $this->_template . '/listar.phtml', [
             'hostname'                  => $this->_hostname,
@@ -58,18 +56,14 @@ class OffersController
             'titulo'                    => $this->_titulo,
             'subtitulo'                 => 'Listar ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
-            'menu_'.$this->_pagina      => 'class=active',
-            'parceiros'                 => $parceiros,
-            'ofertas'                   => $ofertas        
+            'menu_'. $this->_pagina     => 'class=active',
+            'parceiros'                 => $this->_filterPartners,
+            'ofertas'                   => $this->_filterOffers        
         ]);
     }
 
     public function inserir(Request $request, Response $response, $args)
     {
-        // Todos os parceiros
-        $parceiros = UserManagerPlatform::GET($this->_hostname, $this->_token, '/partners?limit=1000');
-        $parceiros = Helpers_Interactivity_Offers::getNameAndIdPartners($parceiros);           
-
         if($request->isPost())
         {
             $body = $request->getParsedBody();
@@ -101,16 +95,12 @@ class OffersController
             'subtitulo'                 => 'Nova ' . $this->_subtitulo,
             'menu_sistema'              => $this->_sistema,
             'menu_'.$this->_pagina      => 'class=active',
-            'parceiros'                 => $parceiros               
+            'parceiros'                 => $this->_filterPartners             
         ]);
     }
 
     public function editar(Request $request, Response $response, $args)
     {
-        // Todos os parceiros
-        $parceiros = UserManagerPlatform::GET($this->_hostname, $this->_token, '/partners?limit=1000');
-        $parceiros = Helpers_Interactivity_Offers::getNameAndIdPartners($parceiros);    
-
         // Recuperando os dados pelo id
         $id = $args['id'];
         $rows = UserManagerPlatform::GET($this->_hostname, $this->_token, '/'. $this->_endpoint . '/' . $id);
@@ -148,7 +138,7 @@ class OffersController
             'menu_'.$this->_pagina      => 'class=active',
             'id'                        => $args['id'],
             'rows'                      => $rows,
-            'parceiros'                 => $parceiros             
+            'parceiros'                 => $this->_filterPartners            
         ]);        
     }
 
